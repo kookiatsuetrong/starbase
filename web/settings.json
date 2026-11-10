@@ -1,0 +1,10 @@
+{
+	"password-minimum-length":  8,
+	"password-maximum-length": 15,
+	"password-numeric":        true,
+	"password-uppercase":      true,
+	"password-lowercase":      true,
+	"password-symbol":         true,
+	
+	"last-update": "2026-11-01"
+}

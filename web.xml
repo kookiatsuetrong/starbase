@@ -1,0 +1,33 @@
+<web-app>
+	<session-config>
+		<cookie-config>
+			<name>CARD</name>
+			<max-age>2592000</max-age>
+		</cookie-config>
+		<session-timeout>1440</session-timeout>
+	</session-config>
+	
+	<servlet>
+		<servlet-name>rockstar-servlet</servlet-name>
+		<servlet-class>web.framework.Rockstar</servlet-class>
+		<async-supported>true</async-supported>
+		<init-param>
+			<param-name>class</param-name>
+			<param-value>Start</param-value>
+		</init-param>
+		<init-param>
+			<param-name>method</param-name>
+			<param-value>main</param-value>
+		</init-param>
+		<multipart-config>
+			<max-file-size>10485760</max-file-size>
+			<max-request-size>52428800</max-request-size>
+		</multipart-config>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>rockstar-servlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+</web-app>
+

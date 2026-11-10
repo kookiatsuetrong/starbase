@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<#--
+
+File:       show-user.html
+
+Path:       /--user-alias--
+			/en-us/--user-alias--
+
+Controller: Start.showUser
+
+Model:      target    : User
+			language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+			
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer">
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+
+<#-- Default values -->
+<#assign currentUserEmail = "">
+<#assign base  = "https://callable.online" >
+<#assign photo = "/uploaded/card-empty.png" >
+
+<#assign currentSignature = "">
+<#assign targetSignature  = "">
+
+<#-- Real values -->
+<#if user??>
+<#assign currentUserEmail = user.email         ! "">
+<#assign currentSignature = user.signature     ! "">
+</#if>
+
+<#if target??>
+<#assign targetSignature  = target.signature   ! "" >
+<#assign targetEmail      = target.email       ! "" >
+<#assign targetIdentifier = target.identifier  ! "" >
+<#assign photo            = "/uploaded/card-" + targetIdentifier + ".png" >
+</#if>
+
+
+<#assign showCallButton = false >
+
+<#if currentSignature == "">
+<#assign showCallButton = true >
+</#if>
+
+<#if currentSignature != "" && currentSignature != targetSignature>
+<#assign showCallButton = true >
+</#if>
+
+<!--
+
+	currentSignature = ${currentSignature}
+	targetSigature   = ${targetSignature}
+-->
+
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta property="og:title" content="Callable" />
+		<meta property="og:type"  content="website" />
+		<meta property="og:url"   content="${base}/${targetSignature}" />
+		<meta property="og:image"            content="${base}${photo}"  />
+		<meta property="og:image:secure_url" content="${base}${photo}"  />
+		<meta property="og:image:type"       content="image/png" />
+		<meta property="og:image:width"      content="1600" />
+		<meta property="og:image:height"     content="1200" />
+		<meta property="og:description"      content="Video Call" />
+
+		<title>Callable</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<!--
+			<section class="container">
+				<section class="profile-card">
+					
+					<section id="qrcode"></section>
+					
+					<section class="profile-detail">
+						<img id="target-user-photo" />
+						<span class="signature">
+							@${target.signature}
+						</span>
+					</section>
+					
+					<pre class="contact"
+						>https://callable.online/${target.signature}</pre>
+				</section>
+				
+				<#if showCallButton == true>
+				
+					<section class="center">
+						<button onclick="startCall()">Call</button>
+					</section>
+
+				</#if>
+			</section>
+			
+			<style>
+				.profile-card {
+					box-shadow: 0 0 .5rem #ccc;
+					background: white;
+					margin: 2rem auto;
+					width: 256px;
+					padding: 2rem;
+					display: grid;
+					grid-template-rows: 1fr 3rem 1rem;
+					row-gap: 1rem;
+				}
+				.profile-detail {
+					width: 256px;
+					display: grid;
+					grid-template-columns: 3rem 1fr;
+				}
+				.signature {
+					font-size: 1rem;
+					padding-top: .75rem;
+					text-align: right;
+				}
+				#target-user-photo {
+					width: 3rem;
+					border-radius: 1.5rem;
+					background: #f8f8f8;
+				}
+				.contact {
+					font-size: .6rem;
+					margin: 0;
+					text-align: right;
+				}
+				
+				img {
+					max-width: 100%;
+				}
+				.center {
+					text-align: center;
+				}
+				#qrcode {
+
+				}
+				#qrcode img {
+					padding: 0;
+					margin: 0;
+					display: block;
+				}
+			</style>
+
+			<script src="/qrcode.js"></script>
+			<script>
+				var signature = "${targetSignature}"
+				var qrCodeElement = document.getElementById("qrcode")
+				// var qrCodeElement = document.getElementById("canvas")
+				var roomLocation = "https://callable.online/" + signature
+
+				var qrcode = new QRCode(qrCodeElement, {
+					colorDark :  "${target.theme}",
+					colorLight : "white"
+					})
+				qrcode.makeCode(roomLocation)
+			</script>
+	
+			<script>
+				var targetIdentifier = "${targetIdentifier}"
+				var targetUserEmail  = "${targetEmail}"
+				var currentUserEmail = "${currentUserEmail}"
+
+				loadTargetUserProfile()
+
+				async function loadTargetUserProfile() {
+					var location = "/uploaded/user-" + 
+										targetIdentifier + ".png"
+					var response = await fetch(location)
+					var type = response.headers.get("content-type")
+					var passed = true
+					if (type.startsWith("text/html")) passed = false
+					if (type.startsWith("image/png")) passed = true
+
+					var element = document.querySelector("#target-user-photo")
+					if (passed == true) {
+						element.src = "/uploaded/user-" + 
+										targetIdentifier + ".png"
+					}
+					if (passed == false) {
+						element.src = "/uploaded/empty-user.png"
+					}
+				}
+				
+			</script>
+			
+			-->
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+</html>

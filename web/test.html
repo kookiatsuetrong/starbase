@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Test</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<header></header>
+		
+		<main>
+			<section class="container">
+				<h3>Text Conversion</h3>
+				<textarea></textarea>
+				<button onclick="convert()">Convert</button>
+			</section>
+			<style>
+				textarea {
+					height: 15rem;
+					margin-bottom: .5rem;
+					font-family: monospace;
+					tab-size: 4;
+				}
+			</style>
+			<script>
+				function convert() {
+					var element = document.querySelector("textarea")
+					console.log(element.value)
+					var text = element.value
+					var codeA = "A".charCodeAt(0)
+					var codeZ = "Z".charCodeAt(0)
+					var codea = "a".charCodeAt(0)
+					var codez = "z".charCodeAt(0)
+					var code0 = "0".charCodeAt(0)
+					var code9 = "9".charCodeAt(0)
+					
+					/*
+					var monoA = 0x1D670
+					var monoa = 0x1D68A
+					var mono0 = 0x1D7F6
+					*/
+					var monoA = 0xFF21
+					var monoa = 0xFF41
+					var mono0 = 0xFF10
+					
+					var buffer = ""
+					for (var i = 0; i < text.length; i++) {
+						if (text[i] == "\n") buffer += "\n"
+
+						if (text[i] == "\t") buffer += fromCode(0x3000)
+						if (text[i] == "\t") buffer += fromCode(0x3000)
+						if (text[i] == "\t") buffer += fromCode(0x3000)
+						if (text[i] == "\t") buffer += fromCode(0x3000)
+					   
+						if (text[i] == " ") buffer += fromCode(0x3000)
+						
+						if (text[i] == "!") buffer += fromCode(0xFF01)
+						if (text[i] == '"') buffer += fromCode(0xFF02)
+						if (text[i] == "#") buffer += fromCode(0xFF03)
+						if (text[i] == "$") buffer += fromCode(0xFF04)
+						if (text[i] == "%") buffer += fromCode(0xFF05)
+						if (text[i] == "&") buffer += fromCode(0xFF06)
+						if (text[i] == "'") buffer += fromCode(0xFF07)
+						if (text[i] == "(") buffer += fromCode(0xFF08)
+						if (text[i] == ")") buffer += fromCode(0xFF09)
+						
+						if (text[i] == "*") buffer += fromCode(0xFF0A)
+						if (text[i] == "+") buffer += fromCode(0xFF0B)
+						if (text[i] == ",") buffer += fromCode(0xFF0C)
+						if (text[i] == "-") buffer += fromCode(0xFF0D)
+						if (text[i] == ".") buffer += fromCode(0xFF0E)
+						if (text[i] == "/") buffer += fromCode(0xFF0F)
+						
+						if (text[i] == ":") buffer += fromCode(0xFF1A)
+						if (text[i] == ";") buffer += fromCode(0xFF1B)
+
+						if (text[i] == "<") buffer += fromCode(0xFF1C)
+						if (text[i] == "=") buffer += fromCode(0xFF1D)
+						if (text[i] == ">") buffer += fromCode(0xFF1E)
+						if (text[i] == "?") buffer += fromCode(0xFF1F)
+						
+						if (text[i] == "@") buffer += fromCode(0xFF20)
+						
+						if (text[i] == "[") buffer += fromCode(0xFF3B)
+						if (text[i] == "\\") buffer += fromCode(0xFF3C)
+						if (text[i] == "]") buffer += fromCode(0xFF3D)
+						
+						if (text[i] == "^") buffer += fromCode(0xFF3E)
+						if (text[i] == "_") buffer += fromCode(0xFF3F)
+						if (text[i] == "`") buffer += fromCode(0xFF40)
+						
+						if (text[i] == "{") buffer += fromCode(0xFF5B)
+						if (text[i] == "|") buffer += fromCode(0xFF5C)
+						if (text[i] == "}") buffer += fromCode(0xFF5D)
+						
+						var code = text.charCodeAt(i)
+						
+						if (codeA <= code && code <= codeZ) {
+							buffer += fromCode(monoA + code - codeA)
+						}
+						if (codea <= code && code <= codez) {
+							buffer += fromCode(monoa + code - codea)
+						}
+						if (code0 <= code && code <= code9) {
+							buffer += fromCode(mono0 + code - code0)
+						}
+					}
+					console.log(buffer)
+				}
+				
+				function fromCode(code) {
+					return String.fromCodePoint(code)
+				}
+			</script>
+		</main>
+		
+	</body>
+</html>

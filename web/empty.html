@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<#setting number_format="computer">
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Empty</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container">
+				<#assign e = "...">
+				<#if user??>
+					<#assign e = user.email>
+				</#if>
+				
+				Test ${e}
+			</section>
+		</main>
+		
+		<#include "footer.html">
+	</body>
+</html>

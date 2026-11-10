@@ -1,0 +1,230 @@
+
+<#assign homeText      = translate["home"]            ! "Home" >
+<#assign logInText     = translate["log-in"]          ! "Log In">
+
+<#assign accountText   = translate["account-removal"] ! "Account Removal" >
+<#assign privacyText   = translate["privacy-policy"]  ! "Privacy Policy"  >
+<#assign termText      = translate["term-of-service"] ! "Term of Service" >
+
+<#assign createAccount = translate["create-account"]  ! "Create Account"  >
+<#assign removeAccount = translate["remove-account"]  ! "Account Removal" >
+<#assign resetPassword = translate["reset-password"]  ! "Reset Password"  >
+
+<#assign profileText   = translate["profile"]         ! "Profile"         >
+<#assign basketText    = translate["basket"]          ! "Basket"          >
+<#assign addressText   = translate["address"]         ! "Addresses"       >
+<#assign languageText  = translate["language-menu"]   ! "Language"        >
+
+<#assign language = language ! "en-us" >
+<#assign languageLink = "/" + language>
+
+		<footer>
+			<section class="container">
+				<section>
+					<a href="${languageLink}/">${homeText}</a>
+					<a href="${languageLink}/privacy-policy">${privacyText}</a>
+					<a href="${languageLink}/term-of-service">${termText}</a>
+					<a href="${languageLink}/remove-account-detail"
+											>${removeAccount}</a>
+				</section>
+				
+				<section>
+					<#if user??>
+					<a href="${languageLink}/profile">${profileText}</a>
+					<!--
+					<a href="${languageLink}/basket">${basketText}</a>
+					<a href="${languageLink}/manage-address">${addressText}</a>
+					-->
+					<#if shop??>
+					</#if>
+					
+					<#else>
+						
+					<a href="${languageLink}/ask-email">${createAccount}</a>
+					<a href="${languageLink}/ask-email">${logInText}</a>
+					<a href="${languageLink}/reset-password"
+											>${resetPassword}</a>
+					</#if>
+					
+					<a href="javascript:changeLanguage()">${languageText}</a>
+				</section>
+				
+				<section>
+					<p>
+						<b>My Web Site</b>
+						<br/>
+						The quick brown fox jumps over a lazy dog.
+					</p>
+					
+				</section>
+			</section>
+			
+			<section class="last-line">
+				<section class="container">
+					<span id="copyright">&copy; 2026</span>
+					<span id="language-tracking"></span>
+				</section>
+			</section>
+			
+			<style>
+				footer {
+					padding-top: 2rem;
+				}
+				
+				footer .container {
+					display: grid;
+					column-gap: 2rem;
+				}
+				
+				@media (min-width:640px) {
+					footer .container {
+						grid-template-columns: 1fr 1fr 1fr;
+					}
+				}
+				
+				footer p {
+					margin: 0;
+					margin-top: -.25rem;
+				}
+				.last-line {
+					margin-top: 1rem;
+					background: rgba(0, 0, 0, .50);
+					padding: .5rem 0;
+				}
+				.last-line .container {
+					display: grid;
+				}
+				
+				#copyright {
+					display: none;
+				}
+				
+				@media (min-width:480px) {
+					.last-line .container {
+						grid-template-columns: 1fr 12rem;
+					}
+					#copyright {
+						display: inline-block;
+					}
+				}
+				#language-tracking {
+					text-align: right;
+				}
+			</style>
+			
+			<script src="/dialog.js"></script>
+			
+			<script>
+				
+				getCurrentLanguage()
+				
+				async function getCurrentLanguage() {
+					// Idea of this function is to detect language from URL
+					// From URL: /en-us/ask-email?city=bangkok#12345
+					// location.pathname = "/en-us/ask-email"
+					// location.hash     = "#12345"
+					// location.search   = "?city=bangkok"
+					
+					var location = "/service-list-languages"
+					var response = await fetch(location)
+					var detail   = await response.json()
+					console.log("/service-list-languages")
+					console.log(detail)
+					
+					if (detail.result == "ERROR") {
+						updateLanguageMenu("en-us")
+						return
+					}
+					
+					var languages = detail.data
+					
+					var text = "" + window.location.pathname
+					var tokens = text.split("/")
+					console.log("text " + text)
+					console.log(tokens)
+					
+					var index = -1
+					for (var i = 0; i < languages.length; i++) {
+						var lower = languages[i].alias.toLowerCase()
+						if (lower == tokens[1]) {
+							index = i
+						}
+					}
+					
+					if (index == -1) {
+						updateLanguageMenu("English (United State)")
+					}
+					
+					if (index >= 0) {
+						updateLanguageMenu(languages[index].name)
+					}
+				}
+				
+				function updateLanguageMenu(alias) {
+					var element = document.querySelector
+										("#language-tracking")
+					element.innerText = alias
+				}
+				
+				async function changeLanguage() {
+					var location = "/service-list-languages"
+					var response = await fetch(location)
+					var detail   = await response.json()
+					console.log(detail)
+					
+					if (detail.result == "OK") {
+						var dialog = new LanguageSelection()
+						dialog.setLanguages(detail.data)
+						var result = await dialog.show()
+						if (result == false) { console.log("canceled") }
+						if (result == true)  { 
+							// console.log(dialog.language)
+							var alias = "en-us"  // default
+							for (var e of detail.data) {
+								if (e.name == dialog.language) {
+									alias = e.alias
+								}
+							}
+							
+							var text = "" + window.location.pathname
+							var tokens = text.split("/")
+							console.log(tokens)
+							
+							var pathAlias = ""
+							for (var e of detail.data) {
+								if (tokens[1] == e.alias.toLowerCase()) {
+									pathAlias = e.alias
+								}
+							}
+							
+							if (pathAlias == "") {
+								var nextTokens = [ ]
+								nextTokens.push("")
+								nextTokens.push(alias.toLowerCase())
+								for (var i = 1; i < tokens.length; i++) {
+									nextTokens.push(tokens[i])
+								}
+								var next = nextTokens.join("/")
+								next += window.location.search
+								
+								console.log("pathAlias is not found")
+								console.log("goto " + next)
+								
+								window.location.href = next
+							}
+							
+							if (pathAlias != "") {
+								tokens[1] = alias.toLowerCase()
+								var next = tokens.join("/")
+								next += window.location.search
+								console.log("pathAlias is found")
+								console.log("goto " + next)
+								window.location.href = next
+							}
+
+						}
+					}
+				}
+			</script>
+
+		</footer>

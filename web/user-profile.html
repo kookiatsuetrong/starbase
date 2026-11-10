@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<#assign userProfile   = translate["user-profile"]     ! "User Profile"    >
+<#assign settings      = translate["settings"]         ! "Settings"        >
+<#assign password      = translate["password"]         ! "Password"        >
+<#assign photo         = translate["photo"]            ! "Photo"           >
+<#assign basket        = translate["basket"]           ! "Basket"          >
+<#assign address       = translate["address"]          ! "Address"         >
+<#assign signature     = translate["signature"]        ! "Signature"       >
+<#assign status        = translate["status"]           ! "Status"          >
+<#assign removeAccount = translate["remove-account"]   ! "Remove Account"  >
+<#assign logOut        = translate["log-out"]          ! "Log Out"         >
+
+<#assign shopTitle     = translate["shop-management"]  ! "Shop Management" >
+<#assign shopText      = translate["shop"]             ! "Shop"            >
+<#assign categoryText  = translate["category"]         ! "Category"        >
+<#assign productText   = translate["product"]          ! "Product"         >
+
+<#setting number_format = "computer">
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+
+<#assign permissionDenied       = translate["permission-denied"]        ! "" >
+<#assign cacheRefreshingSuccess = translate["cache-refreshing-success"] ! "" >
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${userProfile}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container">
+				<h2>${userProfile}</h2>
+				
+				<section class="block-menu-container">
+					<a href="${languageLink}/settings">
+						${settings}
+						<img src="/icons/settings.svg" />
+						</a>
+					<a href="${languageLink}/password">
+						${password}
+						<img src="/icons/code.svg" />
+						</a>
+					<a href="${languageLink}/user-photo">
+						${photo}
+						<img src="/icons/profile.svg" />
+						</a>
+					<a href="${languageLink}/user-status">
+						${status}
+						<img src="/icons/clock.svg" />
+						</a>
+					<a href="${languageLink}/remove-account">
+						${removeAccount}
+						<img src="/icons/bin.svg" />
+						</a>
+					<a href="javascript:logout()">
+						${logOut}
+						<img src="/icons/switch.svg" />
+						</a>
+				</section>
+				
+				<#if user.administrator>
+				<br/>
+				<br/>
+				<h2>Administration</h2>
+				<section class="block-menu-container">
+					<a href="/ban-user">
+						User Management
+						<img src="/icons/user-approve.svg" />
+						</a>
+					<a href="javascript:refreshCache()">
+						Cache Refreshing
+						<img src="/icons/refresh.svg" />
+						</a>
+					<a href="/customer-service">
+						Customer Service
+						<img src="/icons/pad.svg" />
+						</a>
+				</section>
+				</#if>
+				
+			</section>
+			
+			<style>
+				.block-menu-container {
+					display: grid;
+					column-gap: 2rem;
+					row-gap: 2rem;
+					padding-top: 2rem;
+				}
+				@media (min-width:768px) {
+					.block-menu-container {			
+						grid-template-columns: 1fr 1fr;
+					}
+				}
+				@media (min-width:1024px) {
+					.block-menu-container {			
+						grid-template-columns: 1fr 1fr 1fr;
+					}
+				}
+
+				.block-menu-container a {
+					color: var(--brand-color);
+					border: .1rem solid var(--brand-light);
+					border-radius: 1rem;
+
+					padding: 1rem 1rem;
+					font-size: 1.5rem;
+
+					transform-origin: bottom left;
+					transition: background .1s linear;
+					background: rgba(160, 200, 240, .5);
+					backdrop-filter: blur(.25rem);
+				}
+
+				.block-menu-container img {
+					float: right;
+					width: 3.2rem;
+				}
+
+				@keyframes change-background {
+					100% {
+						background: var(--brand-color);
+					}
+				}
+
+				.block-menu-container a:hover {
+					animation: .1s change-background;
+					background: var(--brand-color);
+					color: white;
+					border: .1rem solid var(--brand-color);
+				}
+
+			</style>
+
+			<script>
+				var messages = { }
+				messages["permission-denied"] = "${permissionDenied}"
+				messages["cache-refreshing-success"] 
+									= "${cacheRefreshingSuccess}"
+
+				getCurrentUser()
+
+				async function getCurrentUser() {
+					var location = "/service-me"
+					var response = await fetch(location)
+					var detail   = await response.json()
+					console.log(detail)
+
+					if (detail.result == "OK") {
+
+					}
+				}
+
+				async function logout() {
+					var location = "/service-logout"
+					var response = await fetch(location)
+					var detail   = await response.json()
+					if (detail.result == "OK") {
+						window.location = "${languageLink}/"
+					}
+				}
+
+				<#if user.administrator>
+				async function refreshCache() {
+					var location = "/service-refresh-cache"
+					var response = await fetch(location)
+					var detail   = await response.json()
+					var dialog = new Notification()
+					dialog.setLanguage("${language}")
+					dialog.setText(messages[detail.reason])
+					await dialog.show()
+					window.location = "${languageLink}/profile"
+				}
+				</#if>
+			</script>
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+</html>

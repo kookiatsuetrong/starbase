@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Test</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		
+		<main>
+			<section class="container">
+				
+				<form class="web-form">
+					<h3>Log In</h3>
+					
+					<p>
+						Use your email and password to log in.
+					</p>
+					<input name="email" id="email" 
+						placeholder="Your Email" 
+						autofocus
+						autocomplete="off"
+						/>
+					<input name="password" 
+						id="password"
+						type="password"
+						placeholder="Your Password" 
+						/>
+					
+					<span class="photo-code-container">
+						<input name="photo-code" 
+							placeholder="Number from the right hand"
+						/>
+						<span id="photo-code"></span>
+					</span>
+					
+					<span class="panel">
+						<a onclick="javascript:uploadPhoto()"
+							class="button">Log In</a>
+					</span>
+					<span class="error"></span>
+				</form>
+					
+			</section>
+			
+			<script src="/photo-code.js"></script>
+			<script>
+				createPhotoCode()
+				
+				async function createPhotoCode() {
+					var location = "/service-create-photo-code"
+					var element = document.getElementById("photo-code")
+					var code = new PhotoCode(element)
+					var result = await code.getPhotoCode(location)
+					if (result.result == "OK") {
+						var image = document.createElement("img")
+						image.src = "data:image/png;base64," + result.photo
+						element.appendChild(image)
+					}
+				}
+			</script>
+			<style>
+				main {
+					margin-top: 8rem;
+				}
+				a.button:hover {
+					color: white;
+				}
+				.panel {
+					display: block;
+					margin-top: 1rem;
+					margin-bottom: .8rem;
+				}
+				.photo-code-container {
+					display: grid;
+					grid-template-columns: 1fr 8rem;
+					column-gap: 1rem;
+				}
+				#photo-code {
+					background: #eee;
+					padding-top: .75rem;
+					border-radius: .5rem;
+					text-align: center;
+				}
+			</style>
+		</main>
+		
+	</body>
+	
+</html>
+

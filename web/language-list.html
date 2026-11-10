@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<#setting number_format="computer">
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Language</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<header></header>
+		
+		<main>
+			<section class="container">
+				
+				<h3 class="page-title">Language List</h3>
+				<span>
+					<#if shop??>
+					<b>${shop.name}</b>
+					</#if>
+					<a href="/choose-shop?next=/manage-language"
+						class="menu">Change</a>
+				</span>
+			</section>
+			
+			<section class="container">
+				<section class ="language-container">
+				<#list languages as lang>
+					<span class="language">
+						<input type="checkbox"
+							class="checkbox"
+							data-item="${lang.alias}"
+							id="language-${lang.number}"
+							/>
+
+						<label for="language-${lang.number}">
+							${lang.alias} ${lang.name}
+						</label>
+					</span>
+				</#list>
+				</section>
+				
+				<button class="button" id="update-button">Update</button>
+				
+				<style>
+					.language-container {
+						margin-top: 2rem;
+						margin-bottom: 2rem;
+						display: grid;
+						column-gap: 2rem;
+					}
+					@media (min-width: 640px) {
+						.language-container {
+							grid-template-columns: 1fr 1fr;
+						}
+					}
+					@media (min-width: 1024px) {
+						.language-container {
+							grid-template-columns: 1fr 1fr 1fr;
+						}
+					}
+					
+					.language {
+						display: block;
+						margin-bottom: .5rem;
+					}
+					input[type=checkbox] {
+						width: 2rem;
+						display: inline-block;
+						vertical-align: middle;
+					}
+				</style>
+				<script>
+					var available = [ 
+										<#list available as a>
+										"${a}",
+										</#list>
+									]
+	
+					start()
+	
+					function start() {
+						var elements = document.querySelectorAll(".checkbox")
+
+						for (var e of elements) {
+							e.checked = false
+							var alias = e.getAttribute("data-item")
+							var found = false
+							for (var i = 0; i < available.length; i++) {
+								if (alias == available[i]) {
+									found = true
+								}
+							}
+							if (found) { 
+								e.checked = true
+							}
+						}
+					}
+					
+					var updateButton = document.querySelector("#update-button")
+					updateButton.addEventListener("click", saveLanguage)
+					
+					async function saveLanguage() {
+						var list = [ ]
+						var elements = document.querySelectorAll(".checkbox")
+						for (var e of elements) {
+							if (e.checked == true) {
+								var alias = e.getAttribute("data-item")
+								list.push(alias)
+							}
+						}
+						console.log(list)
+						var detail = { }
+						detail.data = list
+						
+						var payload = { }
+						payload.method = "POST"
+						payload.headers = { }
+						payload.headers["Content-Type"] = "application/json"
+						payload.body = JSON.stringify(detail)
+						
+						var location = "/service-add-language"
+						var response = await fetch(location, payload)
+						var result   = await response.json()
+						
+						console.log(result)
+						
+					}
+					
+				</script>
+			</section>
+		</main>
+		
+		<#include "footer.html">
+	</body>
+</html>
+

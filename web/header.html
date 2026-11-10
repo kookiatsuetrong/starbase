@@ -1,0 +1,108 @@
+
+<#assign language     = language ! "en-us" >
+<#assign languageLink = "/" + language>
+
+<#assign userSignature = "">
+<#if user??>
+<#assign userSignature = user.signature ! "">
+</#if>
+
+		<header>
+			<section class="container">
+				<span class="header-left">
+					<a href="${languageLink}/profile">
+						<img src="/icons/blocks.svg" />
+					</a>
+				</span>
+				
+				<span class="header-right">
+					
+					<a href="${languageLink}/user-status">
+						<img id="header-profile" />
+					</a>
+					
+					<!--
+	 
+					<a href="${languageLink}/basket">
+						<img src="/icons/basket.svg" />
+					</a>
+					-->
+				</span>
+			</section>
+			
+			<style>
+				header {
+					background: var(--brand-color);
+					margin-bottom: 1rem;
+					padding-top: .8rem;
+					padding-bottom: .25rem;
+					color: white;
+				}
+				header a {
+					color: white;
+					margin: 0;
+					padding: 0;
+				}
+				header a:hover svg {
+					
+				}
+				header svg {
+				}
+				header section {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+				}
+				header .header-right {
+					text-align: right;
+				}
+				header .header-right a {
+					margin-left: .5rem;
+				}
+				header #header-profile {
+					float: right;
+					margin-top: -0.15rem;
+					width: 1.5rem;
+					border-radius: 1rem;
+					border: .15rem solid white;
+				}
+			</style>
+			
+			<script>
+				<#assign userIdentifier = 0 >
+				<#if user??>
+				<#assign userIdentifier = user.identifier>
+				</#if>
+				
+				var userIdentifier = "${userIdentifier}"
+				
+				loadHeaderProfile()
+				
+				async function loadHeaderProfile() {
+					var location = "/uploaded/user-" + userIdentifier + ".png"
+					location += "?" + parseInt(Math.random() * 100000)
+					
+					var response = await fetch(location)
+					var type = response.headers.get("content-type")
+					var passed = true
+					if (type.startsWith("text/html")) passed = false
+					if (type.startsWith("image/png")) passed = true
+
+					var element = document.querySelector("#header-profile")
+					if (passed == true) {
+						element.src = location
+					}
+					if (passed == false) {
+						// element.src = "/uploaded/empty-user.png"
+						element.src = "/icons/user.svg"
+					}
+				}
+				
+				function setSignatureAddress(signature) {
+					var element = document.querySelector("#signature-link")
+					element.href = "${languageLink}/" + signature
+				}
+			</script>
+
+		</header>
+		
+		

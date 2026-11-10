@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<#--
+
+File:       user-signature.html
+
+Path:       /user-signature
+			/en-us/user-signature
+
+Controller: UserHandler.showSignature()
+
+Model:      language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer">
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+
+<#assign title         = translate["signature-title"] ! "Signature" >
+<#assign titleHint     = translate["signature-hint"]  ! "Change Signature" >
+<#assign back          = translate["back"]            ! "Back" >
+<#assign change        = translate["change"]          ! "Change" >
+
+<#assign signature     = translate["signature"]       ! "Signature" >
+<#assign signatureHint = translate["signature-hint"]  ! "New Signature" >
+
+<#assign color         = translate["color"]           ! "Color" >
+
+<#assign emptySignature      = translate["signature-is-empty"]            ! "">
+<#assign invalidSignature    = translate["signature-is-invalid"]          ! "">
+<#assign signatureTooShort   = translate["signature-is-too-short"]        ! "">
+<#assign duplicatedSignature = translate["duplicated-signature"]          ! "">
+<#assign changeSuccessfully  = translate["change-signature-successfully"] ! "">
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+		<link rel="stylesheet" href="/colorpicker.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container duo">
+				<section>
+					<form action="javascript:changeSignature()" 
+						class="web-form">
+						<h3>${title}</h3>
+
+						<p>
+							${titleHint}
+						</p>
+
+						<label for="signature">${signature}:</label>
+						<input name="signature"
+							id="signature"
+							placeholder="${signatureHint}"
+							value="${user.signature}"
+							autofocus
+							/>
+
+						<label for="color">${color}</label>
+						<input name="color"
+							id="color"
+							type="color" />
+
+						<br/>
+
+						<button>${change}</button>
+
+						<a href="${languageLink}/profile">${back}</a>
+						<span class="error"></span>
+					</form>
+				</section>
+				
+				<section>
+					<br/>
+					<h3 class="center">Signature Card</h3>
+					<section class="profile-card">
+						<section id="qrcode"></section>
+
+						<section class="profile-detail">
+							<img id="target-user-photo" />
+							<span class="signature">
+								@${user.signature}
+							</span>
+						</section>
+
+						<pre class="contact"
+							>https://callable.online/${user.signature}</pre>
+					</section>
+				</section>
+				
+			</section>
+			
+			<style>
+				.duo {
+					display: grid;
+					column-gap: 1rem;
+				}
+				
+				@media (min-width:640px) {
+					.duo {
+						grid-template-columns: 1fr 1fr;
+					}
+				}
+			</style>
+			
+			<style>
+				.profile-card {
+					box-shadow: 0 0 .5rem #ccc;
+					background: white;
+					margin: 2rem auto;
+					width: 256px;
+					padding: 2rem;
+					display: grid;
+					grid-template-rows: 1fr 3rem 1rem;
+					row-gap: 1rem;
+				}
+				.profile-detail {
+					width: 256px;
+					display: grid;
+					grid-template-columns: 3rem 1fr;
+				}
+				.signature {
+					font-size: 1rem;
+					padding-top: .75rem;
+					text-align: right;
+				}
+				#target-user-photo {
+					width: 3rem;
+					border-radius: 1.5rem;
+					background: #f8f8f8;
+				}
+				.contact {
+					font-size: .6rem;
+					margin: 0;
+					text-align: right;
+				}
+				
+				img {
+					max-width: 100%;
+				}
+				.center {
+					text-align: center;
+				}
+				#qrcode {
+
+				}
+				#qrcode img {
+					padding: 0;
+					margin: 0;
+					display: block;
+				}
+			</style>
+			
+			<script>
+				window.addEventListener("load", e => {
+					console.log("ready!")
+					var input = document.querySelector("#signature")
+					input.addEventListener("keyup", e => typing(e) )
+				})
+				
+				function typing(e) {
+					console.log(e.target.value)
+					
+					var s = document.querySelector(".signature")
+					s.innerText = "@" + e.target.value
+					
+					var c = document.querySelector(".contact")
+					c.innerText = "https://callable.online/" +
+											e.target.value
+				}
+			</script>
+
+			<script src="/qrcode.js"></script>
+			<script>
+				var signature = "${user.signature}"
+				
+				createBox("${user.theme}")
+				
+				function createBox(color) {
+					var qrCodeElement = document.getElementById("qrcode")
+					qrCodeElement.innerHTML = ""
+					
+					var roomLocation = "https://callable.online/" + signature
+
+					var qrcode = new QRCode(qrCodeElement, {
+							colorDark :  color,
+							colorLight : "white"
+						})
+					qrcode.makeCode(roomLocation)
+				}
+			</script>
+			
+			<script>
+				var targetUserIdentifier = "${user.identifier}"
+
+				loadTargetUserProfile()
+
+				async function loadTargetUserProfile() {
+					var location = "/uploaded/user-" + targetUserIdentifier + 
+										".png"
+					var response = await fetch(location)
+					var type = response.headers.get("content-type")
+					var passed = true
+					if (type.startsWith("text/html")) passed = false
+					if (type.startsWith("image/png")) passed = true
+
+					var element = document.querySelector("#target-user-photo")
+					if (passed == true) {
+						element.src = "/uploaded/user-" + 
+										targetUserIdentifier + ".png"
+					}
+					if (passed == false) {
+						element.src = "/uploaded/empty-user.png"
+					}
+				}
+			</script>
+			
+			<script type="module">
+				import ColorPicker from '/colorpicker.js'
+				
+				var picker = new ColorPicker('input[type=color]', {
+					submitMode: 'instant',
+					enableAlpha: false
+				})
+				
+				picker.setColor("${user.theme}")
+				picker.on('pick', color => {
+					var colorCode = color.string("hex")
+					createBox(colorCode)
+				})
+				
+			</script>
+			
+			<script>
+				var messages = { }
+				messages["signature-is-empty"]     = "${emptySignature}"
+				messages["signature-is-invalid"]   = "${invalidSignature}"
+				messages["signature-is-too-short"] = "${signatureTooShort}"
+				messages["duplicated-signature"]   = "${duplicatedSignature}"
+				messages["change-signature-successfully"] = 
+													"${changeSuccessfully}"
+				
+				async function changeSignature() {
+					var input = document.getElementById("signature")
+					var color = document.getElementById("color")
+					
+					// create QR code to the buffer image
+					var qrCodeElement = document.createElement("section")
+					qrCodeElement.id = "qrcode"
+					var location = "https://callable.online/" + input.value
+
+					var qrcode = new QRCode(qrCodeElement, {
+						text: location,
+						colorDark :  color.value,
+						colorLight : "white",
+						width: 512,
+						height: 512
+						})
+					
+					// save new value to web service
+					var data = { }
+					data.signature = input.value
+					data.color     = color.value
+					
+					var payload = { }
+					payload.method = "POST"
+					payload.headers = { }
+					payload.headers["CONTENT-TYPE"] = "application/json"
+					payload.body = JSON.stringify(data)
+					
+					var location = "/service-change-signature"
+					var response = await fetch(location, payload)
+					var result   = await response.json()
+					
+					console.log(result)
+					
+					// TODO: Check result must be OK
+					setSignatureAddress(data.signature)
+					
+					var text = result.reason
+					text = messages[text] || ""
+					var dialog = new Notification()
+					dialog.setText(text)
+					await dialog.show()
+					
+					// save new contact card
+					await draw(qrCodeElement, data.signature, data.color)
+				}
+			</script>
+			
+			<script>
+				var userIdentifier = "${user.identifier}"
+				
+				async function draw(qrCodeElement, signature, color) {
+				   
+					var canvas = document.createElement("canvas")
+					canvas.width  = 1600
+					canvas.height = 1200
+					var context = canvas.getContext("2d")
+										
+					// draw background
+					context.fillStyle = color
+					context.fillRect(0, 0, canvas.width, canvas.height)
+					
+					var frameWidth  = 640
+					var frameHeight = 800
+					var frameX = (canvas.width  - frameWidth ) / 2
+					var frameY = (canvas.height - frameHeight) / 2
+					
+					// draw white border
+					context.fillStyle = "#fff"
+					context.fillRect(frameX, frameY, frameWidth, frameHeight)
+					
+					// draw identifier
+					context.fillStyle = "#333"
+					context.font = "40px publicsans"
+					var contact = "@" + signature
+					var contactMeasure = context.measureText(contact)
+					context.fillText(contact, 
+									frameX + 574 - contactMeasure.width, 
+									frameY + 664)
+					
+					// draw URL link
+					var link = "https://callable.online/" + signature
+					context.fillStyle = "#666"
+					context.font = "22px monospace"
+					var linkMeasure = context.measureText(link)
+					context.fillText(link, 
+									frameX + 572 - linkMeasure.width, 
+									frameY + 740)
+					
+					// draw qr-code
+					var qr = qrCodeElement.querySelector("img")
+					
+					var box = new Image()
+					box.addEventListener("load", e => {
+						context.drawImage(box, frameX + 60, frameY + 60)
+						console.log("qr-code has been drawn")
+					})
+					box.src = qr.src
+					
+					// draw photo
+					var location = "/uploaded/user-" + 
+									userIdentifier + ".png"
+					var response = await fetch(location)
+					var type = response.headers.get("content-type")
+					var passed = true
+					if (type.startsWith("text/html")) passed = false
+					if (type.startsWith("image/png")) passed = true
+
+					var photoElement = document.createElement("img")
+					if (passed == true) {
+						photoElement.src = "/uploaded/user-" + 
+										userIdentifier + ".png"
+					}
+					if (passed == false) {
+						photoElement.src = "/uploaded/empty-user.png"
+					}
+					
+					var profile = new Image()
+					profile.addEventListener("load", async e => {
+						context.save()
+						context.beginPath()
+						context.roundRect(frameX + 60, 
+										frameY + 600, 
+										100, 
+										100, 
+										50)
+
+						context.clip()
+						context.drawImage(profile, 
+										frameX + 60, 
+										frameY + 600, 
+										100, 
+										100)
+						
+						window.profileBuffer = canvas.toDataURL()
+						console.log("size = " + window.profileBuffer.length)
+						// console.log(window.profileBuffer)
+						
+						var service = "/service-save-card"
+						var data = { }
+						data.detail = window.profileBuffer
+						var payload = { }
+						payload.method = "POST"
+						payload.headers = { }
+						payload.headers["Content-Type"] = "application/json"
+						payload.body = JSON.stringify(data)
+						
+						var response = await fetch(service, payload)
+						var result   = await response.text()
+						console.log(result)
+						
+						/*
+						var test = document.createElement("img")
+						test.src = window.profileBuffer
+						document.body.appendChild(test)
+						*/
+					})
+					
+					profile.src = photoElement.src
+				}
+				
+			</script>
+			
+	
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+</html>

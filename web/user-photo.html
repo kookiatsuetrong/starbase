@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<#--
+
+File:       user-photo.html
+
+Path:       /photo
+			/en-us/photo
+
+Controller: UserHandler.showPhotoManagement()
+
+Model:      language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer">
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+
+<#assign title       = translate["profile-photo-title"] ! "" >
+<#assign titleHint   = translate["profile-photo-hint"]  ! "" >
+<#assign back        = translate["back"]                ! "" >
+<#assign upload      = translate["upload-photo"]        ! "" >
+<#assign choosePhoto = translate["choose-photo"]        ! "" >
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container">
+				
+				<form onsubmit="uploadPhoto()" class="web-form">
+					<h3>${title}</h3>
+					
+					<img id="current-photo" />
+					
+					<p>
+						${titleHint}
+					</p>
+					<section class="file-upload"></section>
+					
+					<hr/>
+					
+					<span class="panel">
+						<a onclick="javascript:uploadPhoto()"
+							class="button">${upload}</a>
+
+						<a href="${languageLink}/profile">${back}</a>
+					</span>
+					<span class="error"></span>
+				</form>
+					
+			</section>
+			
+			<script src="/uploader.js"></script>
+			<script>
+				var targetElement = document.querySelector(".file-upload")
+				var uploader = new SinglePhotoUploader()
+				uploader.setElement(targetElement)
+				uploader.setText("Drop Profile Photo")
+				uploader.setType("image/*")
+				uploader.setMultiple(false)
+				uploader.setResize(true)
+				uploader.setWidth(400)
+				uploader.setSquare(true)
+				
+				async function uploadPhoto() {
+					console.log("Uploading ...")
+					var location = window.location.pathname
+					var result   = await uploader.upload(location)
+					// console.log(result)
+					window.location.href = location
+				}
+				
+			</script>
+			<style>
+				#current-photo {
+					width: 100%;
+					max-width: 15rem;
+					border-radius: 2rem;
+					display: block;
+					margin: 2rem auto;
+				}
+				span.panel {
+					display: block;
+					margin: 1.25rem 0 .75rem 0;
+				}
+				a.button {
+					margin-right: .75rem;
+				}
+			</style>
+			<script>
+				loadCurrentPhoto()
+
+				async function loadCurrentPhoto() {
+					var location = "/uploaded/user-" + userIdentifier + ".png"
+					location += "?" + parseInt(Math.random() * 100000)
+					var response = await fetch(location)
+					var type = response.headers.get("content-type")
+					var passed = true
+					if (type.startsWith("text/html")) passed = false
+					if (type.startsWith("image/png")) passed = true
+
+					var element = document.querySelector("#current-photo")
+					if (passed == true) {
+						element.src = location
+					}
+					if (passed == false) {
+						element.src = "/uploaded/empty-user.png"
+					}
+				}
+			</script>
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+</html>
+

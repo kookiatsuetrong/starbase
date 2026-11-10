@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<#setting number_format = "computer"         >
+<#assign language       = language ! "en-us" >
+<#assign languageLink   = "/" + language     >
+
+<#assign base  = "https://callable.online"   >
+<#assign photo = "/callable.png"             >
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		
+		<meta property="og:title" content="Callable" />
+		<meta property="og:type"  content="website"  />
+		<meta property="og:url"   content="${base}"  />
+		<meta property="og:image"            content="${base}${photo}"  />
+		<meta property="og:image:secure_url" content="${base}${photo}"  />
+		<meta property="og:image:type"       content="image/png" />
+		<meta property="og:image:width"      content="2424" />
+		<meta property="og:image:height"     content="1125" />
+		<meta property="og:description"      content="Video Call" />
+		
+		<title>My Web Site</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<header></header>
+		
+		<main>
+			
+		</main>
+		
+		<#include "footer.html">
+		
+	</body>
+</html>

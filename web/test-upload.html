@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Test</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		
+		<main>
+			<section class="container">
+				
+				<form onsubmit="uploadPhoto()" class="web-form">
+					<h3>Upload</h3>
+					
+					<p>
+						Upload new photos
+					</p>
+					<section class="file-upload"></section>
+					
+					<span class="panel">
+						<a onclick="javascript:uploadPhoto()"
+							class="button">Upload</a>
+					</span>
+					<span class="error"></span>
+				</form>
+					
+			</section>
+			
+			<script src="/uploader.js"></script>
+			<script>
+				var targetElement = document.querySelector(".file-upload")
+				var uploader = new SinglePhotoUploader()
+				uploader.setElement(targetElement)
+				
+				uploader.setText("Drop File(s)")
+				uploader.setType("image/*")
+				uploader.setMultiple(true)
+				uploader.setResize(true)
+				uploader.setWidth(400)
+				uploader.setSquare(true)
+				
+				async function uploadPhoto() {
+					var location = "/service-test-upload-photo"
+					var result = await uploader.upload(location)
+					console.log(result)
+					// window.location.href = "/test-upload.html"
+				}
+			</script>
+			<style>
+				main {
+					margin-top: 8rem;
+				}
+				a.button:hover {
+					color: white;
+				}
+				.file-upload {
+					margin-bottom: 1rem;
+				}
+				.web-form {
+					padding-bottom: 1.25rem;
+				}
+			</style>
+		</main>
+		
+	</body>
+	
+</html>
+
+

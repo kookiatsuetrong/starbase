@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<#--
+File:       create-account.html
+
+Path:       /create-account
+			/en-us/create-account
+
+Controller: UserHandler.createAccount()
+
+Model:      language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer">
+
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+<#assign title          = translate["create-account"]      ! "">
+<#assign titleHint      = translate["create-account-hint"] ! "">
+
+<#assign firstName      = translate["first-name"]          ! "">
+<#assign firstNameHint  = translate["first-name-hint"]     ! "">
+<#assign lastName       = translate["last-name"]           ! "">
+<#assign lastNameHint   = translate["last-name-hint"]      ! "">
+<#assign password       = translate["password"]            ! "">
+<#assign passwordHint   = translate["password-hint"]       ! "">
+<#assign createAccount  = translate["create-account"]      ! "">
+
+<#assign activationCode     = translate["activation-code"]      ! "">
+<#assign activationCodeHint = translate["activation-code-hint"] ! "">
+
+<#assign invalidEmail             = translate["invalid-email"]             !"">
+<#assign invalidUser              = translate["invalid-user"]              !"">
+<#assign invalidPassword          = translate["invalid-password"]          !"">
+<#assign incorrectPasswordFormat  = translate["incorrect-password-format"] !"">
+<#assign incorrectActivationCode  = translate["incorrect-activation-code"] !"">
+<#assign duplicatedEmail          = translate["duplicated-email"]          !"">
+
+<#assign firstNameTooShort        = translate["first-name-too-short"]      !"">
+<#assign firstNameTooLong         = translate["first-name-too-long"]       !"">
+<#assign lastNameTooShort         = translate["last-name-too-short"]       !"">
+<#assign lastNameTooLong          = translate["last-name-too-long"]        !"">
+
+<#assign passwordTooLong          = translate["password-too-long"]         !"">
+<#assign passwordTooShort         = translate["password-too-short"]        !"">
+<#assign passwordHasNoDigit       = translate["password-has-no-digit"]     !"">
+<#assign passwordHasNoUppercase   = translate["password-has-no-uppercase"] !"">
+<#assign passwordHasNoLowercase   = translate["password-has-no-uppercase"] !"">
+
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<header></header>
+		
+		<main>
+			<form action="javascript:submit()"
+				class="web-form">
+				<h3>${title}</h3>
+
+				<p>
+					${titleHint}
+				</p>
+				
+				<label for="activation-code">${activationCode}:</label>
+				<input name="activation-code"
+					id="activation-code"
+					placeholder="${activationCodeHint}"
+					required
+					autofocus
+					autocomplete="off"
+					/>
+
+				<label for="password">${password}:</label>
+				<input name="password"
+					id="password"
+					required
+					placeholder="${passwordHint}"
+					type="password"
+					/>
+
+				<label for="first-name">${firstName}:</label>
+				<input name="first-name"
+					id="first-name"
+					required
+					placeholder="${firstNameHint}"
+					autocomplete="off"
+					/>
+
+				<label for="last-name">${lastName}:</label>
+				<input name="last-name"
+					id="last-name"
+					required
+					placeholder="${lastNameHint}"
+					autocomplete="off"
+					/>
+
+				<hr/>
+				
+				<button>${createAccount}</button>
+				<span class="error"></span>
+			</form>
+		</main>
+		
+		<#include "footer.html">
+		
+	</body>
+	<script>
+		var language     = "${language}"
+		var languageLink = "${languageLink}"
+
+		var messages = { }
+		messages["invalid-user"]               = "${invalidUser}"
+		messages["invalid-email"]              = "${invalidEmail}"
+		messages["invalid-password"]           = "${invalidPassword}"
+		messages["incorrect-password-format"]  = "${incorrectPasswordFormat}"
+		messages["incorrect-activation-code"]  = "${incorrectActivationCode}"
+		messages["duplicated-email"]           = "${duplicatedEmail}"
+
+		messages["first-name-too-short"]       = "${firstNameTooShort}"
+		messages["first-name-too-long"]        = "${firstNameTooLong}"
+		messages["last-name-too-short"]        = "${lastNameTooShort}"
+		messages["last-name-too-long"]         = "${lastNameTooLong}"
+
+		messages["password-too-long"]          = "${passwordTooLong}"
+		messages["password-too-short"]         = "${passwordTooShort}"
+		messages["password-has-no-digit"]      = "${passwordHasNoDigit}"
+		messages["password-has-no-uppercase"]  = "${passwordHasNoUppercase}"
+		messages["password-has-no-lowercase"]  = "${passwordHasNoLowercase}"
+
+		function 
+		valid(e) {
+			return typeof e != "undefined"
+		}
+		
+		async function
+		submit() {
+			var passwordElement   = document.querySelector("[name=password]")
+			var activationElement = document.querySelector(
+													"[name=activation-code]")
+			var firstNameElement  = document.querySelector("[name=first-name]")
+			var lastNameElement   = document.querySelector("[name=last-name]")
+
+			var payload = { }
+			payload.method = "POST"
+			payload.headers = { }
+			payload.headers["Content-Type"] = "application/json"
+
+			var data = { }
+			data.password       = passwordElement.value
+			data.activationCode = activationElement.value
+			data.firstName      = firstNameElement.value
+			data.lastName       = lastNameElement.value
+			data.language       = language
+			payload.body = JSON.stringify(data)
+
+			console.log(data)
+
+			var response = await fetch("/service-create-account", payload)
+			var detail   = await response.json()
+			console.log(detail)
+
+			if (detail.result == "OK") {
+				window.location = "${languageLink}/profile"
+			}
+
+			if (detail.result == "ERROR") {
+				var dialog = new Notification()
+				dialog.setLanguage("${language}")
+				var text = messages[detail.reason] || ""
+
+				if (valid(detail.errors) && detail.errors.length > 0) {
+					var span = "<span style='font-size:.9rem;color:#777;'>"
+					for (var e of detail.errors) {
+						span += "<br/> - " + messages[e]
+					}
+					span += "</span>"
+					text += span
+				}
+				dialog.setText(text)
+				await dialog.show()
+			}
+		}
+	</script>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<#--
+
+File:       user-settings.html
+
+Path:       /settings
+
+Controller: UserHandler.showSettings()
+
+Model:      user      : User
+			language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format="computer">
+<#assign language     = language ! "en-us">
+<#assign languageLink = "/" + language>
+
+<#assign title           = translate["user-settings"]       ! "">
+<#assign titleHint       = translate["user-settings-hint"]  ! "">
+<#assign firstName       = translate["first-name"]          ! "">
+<#assign firstNameHint   = translate["first-name-hint"]     ! "">
+<#assign lastName        = translate["last-name"]           ! "">
+<#assign lastNameHint    = translate["last-name-hint"]      ! "">
+<#assign defaultLanguage = translate["default-language"]    ! "">
+<#assign update          = translate["update"]              ! "">
+<#assign back            = translate["back"]                ! "">
+
+<#assign success         = translate["user-information-has-been-updated"] ! "">
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container">
+				
+				<form action="javascript:updateDetail()"
+					class="web-form">
+					<h3>${title}</h3>
+					<p>
+						${titleHint}
+					</p>
+					
+					<label for="first-name">${firstName}:</label>
+					<input name="first-name"
+						id="first-name"
+						placeholder="${firstNameHint}"
+						value="${user.firstName}"
+						/>
+					
+					<label for="last-name">${lastName}:</label>
+					<input name="last-name"
+						id="last-name"
+						placeholder="${lastNameHint}"
+						value="${user.lastName}"
+						/>
+					
+					<label for="language">${defaultLanguage}:</label>
+					<select name="language" id="language">
+						<#list languages as lang>
+							<#if lang.alias == user.language>
+							<option selected>${lang.name}</option>
+							</#if>
+							
+							<#if lang.alias != user.language>
+							<option>${lang.name}</option>
+							</#if>
+							
+						</#list>
+					</select>
+					
+					<hr/>
+					
+					<button>${update}</button>
+
+					<a href="${languageLink}/profile">${back}</a>
+					<span class="error"></span>
+				</form>
+			</section>
+			
+
+			<script>
+
+				var messages = { }
+				messages["user-information-has-been-updated"] = "${success}"
+				messages["unknown-error"]                     = "Error"
+
+				async function 
+				updateDetail() {
+					var firstName = document.querySelector("[name=first-name]")
+					var lastName  = document.querySelector("[name=last-name]")
+					var language  = document.querySelector("[name=language]")
+
+					var data = { }
+					data.firstName    = firstName.value
+					data.lastName     = lastName.value
+					data.languageName = language.value
+
+					var payload = { }
+					payload.method = "POST"
+					payload.headers = { }
+					payload.headers["Content-Type"] = "application/json"
+					payload.body = JSON.stringify(data)
+
+					var response = await fetch("/service-update-user-detail", 
+													payload)
+					var detail   = await response.json()
+					console.log(detail)
+
+					var error = document.querySelector(".error")
+					error.innerHTML = ""
+
+					if (detail.result == "OK") {
+						var dialog = new Notification()
+						dialog.setLanguage("${language}")
+						dialog.setText(messages[detail.reason])
+
+						// TODO: the displaying message is still incorrect
+						//       since it is the old language
+
+						await dialog.show()
+
+						var next = "/" + detail.language + "/profile"
+						window.location.href = next
+					}
+
+					if (detail.result == "ERROR") {
+						var dialog = new Notification()
+						dialog.setLanguage(detail.language)
+						dialog.setText(messages["unknown-error"])
+
+						await dialog.show()
+					}
+
+				}
+			</script>
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+</html>

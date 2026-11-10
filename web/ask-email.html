@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<#--
+
+File:       ask-email.html
+
+Path:       /ask-email
+			/en-us/ask-email
+
+Controller: UserHandler.askEmail()
+
+Model:      language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer">
+
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+
+<#assign title          = translate["create-account-log-in"]  ! 
+							"Create Account / Log In" >
+
+<#assign titleHint      = translate["create-account-log-in-hint"]  ! 
+							"Please enter your email and the code below." >
+						
+<#assign email          = translate["email"]           ! "Email" >
+<#assign emailHint      = translate["email-hint"]      ! "Your Email" >
+
+<#assign photoCode      = translate["photo-code"]      ! "Photo Code" >
+<#assign photoCodeHint  = translate["photo-code-hint"] ! "Photo Code" >
+
+<#assign continue       = translate["continue"]        ! "Continue" >
+<#assign tryAgain       = translate["try-again"]       ! "Try Again" >
+
+<#assign incorrectPhotoCode = translate["incorrect-photo-code"] ! "">
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<header></header>
+		
+		<main>
+			<section class="container">
+				
+				<form action="javascript:submit()"
+					class="web-form">
+					<h3>${title}</h3>
+					<p>${titleHint}</p>
+					
+					<label for="email">${email}:</label>
+					<input name="email" 
+						id="email"
+						placeholder="${emailHint}"
+						required
+						autofocus
+						autocomplete="off" />
+					
+					<label for="code">${photoCode}:</label>
+					<span class="photo-code-container">
+						<input name="code" 
+							placeholder="${photoCodeHint}"
+							id="code" 
+							required
+							autocomplete="off" />
+						
+						<svg width="24" height="24" 
+							viewBox="0 0 24 24" fill="none" 
+							stroke="#888" stroke-width="2" 
+							stroke-linecap="round" stroke-linejoin="round">
+							<path d="M19 12H6M12 5l-7 7 7 7"/>
+						</svg>
+						<img id="photo-code" />
+					</span>
+					
+					<hr/>
+					
+					<button>${continue}</button>
+					<a href="${languageLink}/ask-email" 
+						id="try-again">${tryAgain}</a>
+
+					<button id="try-again-button"
+						onclick="tryAgain()">${tryAgain}</button>
+					
+					<p class="error">
+					</p>
+				</form>
+			</section>
+			
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	<style>
+		.photo-code-container {
+			display: grid;
+			grid-template-columns: 1fr 2rem 4rem;
+			column-gap: .72rem;
+		}
+		.photo-code-container svg {
+			padding-top: .5rem;
+			margin: 0 auto;
+		}
+		.photo-code-container img {
+			margin-top: .1rem;
+			padding: .70rem .85rem .70rem 1.1rem;
+			height: .8rem;
+			border-radius: .35rem;
+			background: #eee;
+		}
+		#try-again-button {
+			display: none;
+		}
+	</style>
+	<script>
+		var language     = "${language}"
+		var languageLink = "${languageLink}"
+		
+		var messages = { }
+		messages["incorrect-photo-code"] = "${incorrectPhotoCode}"
+		
+		requestPhotoCode()
+		
+		async function
+		requestPhotoCode() {
+			var location = "/service-create-photo-code"
+			var response = await fetch(location)
+			var detail   = await response.json()
+			// console.log(detail)
+			var e = document.getElementById("photo-code")
+			e.src = "data:image/png;base64," + detail.photo
+		}
+		
+		var submitted = false
+		
+		async function
+		submit() {
+			if (submitted == true) return
+			submitted = true
+			
+			var emailElement = document.querySelector("[name=email]")
+			var codeElement  = document.querySelector("[name=code]" )
+			
+			var payload = { }
+			payload.method = "POST"
+			payload.headers = { }
+			payload.headers["Content-Type"] = "application/json"
+			
+			var data = { }
+			data.email = emailElement.value
+			data.photoCode = codeElement.value
+			payload.body = JSON.stringify(data)
+			
+			var response = await fetch("/service-check-email", payload)
+			var text     = await response.text()
+			console.log(text)
+			var detail   = JSON.parse(text)
+			console.log(detail)
+			
+			if (detail.result == "OK" &&
+				detail.correctPhotoCode == true) {
+				window.location = languageLink + "/ask-password"
+				return
+			}
+			
+			if (detail.result == "ERROR" &&
+				detail.correctPhotoCode == true) {
+				window.location = languageLink + "/create-account"
+			}
+			
+			if (detail.result == "ERROR" &&
+				detail.correctPhotoCode == false) {
+				
+				var text = messages[detail.reason]
+				var dialog = new Notification()
+				dialog.setLanguage("${language}")
+				dialog.setText(text)
+				await dialog.show()
+				window.location = languageLink + "/ask-email"
+			}
+			
+		}
+		
+		function tryAgain() {
+			window.location = languageLink + "/ask-email"
+		}
+		
+	</script>
+</html>
+

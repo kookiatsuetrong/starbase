@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<#--
+
+File:       remove-account.html
+
+Path:       /remove-account
+			/en-us/remove-account
+
+Controller: UserHandler.removeAccount()
+
+Model:      language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+			user      : User.java
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer">
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+
+<#assign title          = translate["remove-account-title"]  ! "">
+<#assign titleHint      = translate["remove-account-hint"]   ! "">
+<#assign password       = translate["current-password"]      ! "">
+<#assign back           = translate["back"]                  ! "">
+
+<#assign invalidUser           = translate["invalid-user"]             ! "">
+<#assign incorrectPassword     = translate["incorrect-password"]       ! "">
+<#assign accountHasBeenRemoved = translate["account-has-been-removed"] ! "">
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container">
+				
+				<form action="javascript:removeAccount()"
+					class="web-form">
+					<h3>${title}</h3>
+					<p>${titleHint}
+					</p>
+					<input name="password"
+						type="password"
+						placeholder="${password}"
+						autofocus />
+					
+					<hr/>
+					<button>${title}</button>
+					<a href="${languageLink}/profile">${back}</a>
+					<span class="error"></span>
+				</form>
+			</section>
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+	<script>
+		var messages = { }
+		messages["invalid-user"]             = "${invalidUser}"
+		messages["incorrect-password"]       = "${incorrectPassword}"
+		messages["account-has-been-removed"] = "${accountHasBeenRemoved}"
+		
+		async function 
+		removeAccount() {
+			var currentElement = document.querySelector("[name=password]")
+			
+			var data = { }
+			data.password  = currentElement.value
+			
+			var payload = { }
+			payload.method = "POST"
+			payload.headers = { }
+			payload.headers["Content-Type"] = "application/json"
+			payload.body = JSON.stringify(data)
+			
+			console.log(payload)
+			
+			var response = await fetch("/service-remove-account", payload)
+			var detail   = await response.json()
+			console.log(detail)
+			
+			var error = document.querySelector(".error")
+			error.innerHTML = ""
+			
+			if (detail.result == "OK") {
+				var dialog = new Notification()
+				dialog.setText(messages[detail.reason])
+				await dialog.show()
+				window.location.href = "/"
+			}
+			
+			if (detail.result == "ERROR") {
+				var dialog = new Notification()
+				dialog.setText(messages[detail.reason])
+				await dialog.show()
+			}
+			
+			if (detail.result == "OK") {
+				error.innerHTML = messages[detail.reason]
+			}
+
+			if (detail.result == "ERROR" && detail.reason == null) {
+				for (var i = 0; i < detail.errors.length; i++) {
+					error.innerHTML += messages[detail.errors[i]] + "<br/>"
+				}
+			}
+
+			if (detail.result == "ERROR" && detail.reason != null) {
+				error.innerHTML = messages[detail.reason]
+			}
+			
+			error.style.display = "block"
+
+			// TODO: redirect to /logout
+
+		}
+	</script>
+</html>
+
+

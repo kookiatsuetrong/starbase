@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<#--
+
+File:       user-status.html
+
+Path:       /photo
+			/en-us/photo
+
+Controller: UserHandler.showPhotoManagement()
+
+Model:      language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer">
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language>
+
+<#assign title       = translate["user-status-title"] ! "" >
+<#assign titleHint   = translate["user-status-hint"]  ! "" >
+<#assign back        = translate["back"]              ! "" >
+<#assign change      = translate["change"]            ! "" >
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container">
+				<form action="javascript:changeStatus()" class="web-form">
+					<h3>${title}</h3>
+					
+					<p>
+						${titleHint}
+					</p>
+					
+					<section class="duo">
+						<section>
+							<input type="radio" name="status"
+								id="status-ready" 
+								class="status-ready"/>
+							<label for="status-ready"
+								class="status-ready">Ready</label>
+							<span>
+								Use this status when you are ready to
+								accept a call.
+							</span>
+						</section>
+						
+						<section>
+							<input type="radio" name="status" 
+								id="status-busy" 
+								class="status-busy"/>
+							<label for="status-busy"
+								class="status-busy">Busy</label>
+							<span>
+								Use this status when you are <b>not</b> 
+								ready to accept a call.
+							</span>
+						</section>
+						
+					</section>
+					
+					<hr/>
+
+					<button>${change}</button>
+					
+					<a href="${languageLink}/profile">${back}</a>
+					<span class="error"></span>
+				</form>
+			</section>
+			<style>
+				.duo {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+					column-gap: 1rem;
+					margin: 2rem auto;
+				}
+				input[type=radio] {
+					appearance: none;
+					
+					display: inline-grid;
+					place-content: center;
+					vertical-align: middle;
+					cursor: pointer;
+					
+					width: 2rem;
+					border-radius: 2rem;
+					margin-right: .5rem;
+					
+					float: left;
+					padding: .5rem;
+					background: none;
+					
+					border: .2rem solid #ccc;
+				}
+				input[type=radio]:checked {
+					background: white;
+				}
+				
+				input[type=radio]:checked::before {
+					content: "";
+					width:  1rem;
+					height: 1rem;
+					border-radius: 2rem;
+				}
+				
+				input.status-ready[type=radio] {
+					border: .2rem solid green;
+				}
+				input.status-ready[type=radio]:checked::before {
+					background-color: green;
+				}
+				input.status-busy[type=radio] {
+					border: .2rem solid red;
+				}
+				input.status-busy[type=radio]:checked::before {
+					background-color: red;
+				}
+				
+				.duo label {
+					font-size: 1.25rem;
+					display: inline;
+				}
+				.duo label.status-ready {
+					color: green;
+				}
+				.duo label.status-busy {
+					color: red;
+				}
+				.duo span {
+					font-size: .9rem;
+					display: block;
+				}
+			</style>
+			
+			<script>
+				// 1. read current status
+				
+				readCurrentStatus()
+				
+				async function readCurrentStatus() {
+					var location = "/service-get-user-status" +
+									"?signature=" + "${user.signature}"
+							
+					var response = await fetch(location)
+					var detail   = await response.json()
+					
+					console.log(detail)
+					
+					var status = "typical"
+					
+					if (detail.result == "OK") {
+						status = detail.status
+					}
+					
+					var readyElement = document.querySelector("#status-ready")
+					var busyElement  = document.querySelector("#status-busy")
+					
+					if (status == "typical") { 
+						readyElement.checked = true
+					}
+					if (status == "ready") { 
+						readyElement.checked = true
+					}
+					if (status == "busy") {
+						busyElement.checked = true
+					}
+					if (status == "calling") {
+						busyElement.checked = true
+					}
+				}
+				
+				
+				async function changeStatus() {
+					var readyElement = document.querySelector("#status-ready")
+					var busyElement  = document.querySelector("#status-busy")
+					
+					if (readyElement.checked) status = "typical"
+					if (busyElement.checked)  status = "busy"
+					
+					var location = "/service-update-status" +
+									"?status=" + status
+					var response = await fetch(location)
+					var detail   = await response.text()
+					console.log(detail)
+				}
+			</script>
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+</html>
+
+
