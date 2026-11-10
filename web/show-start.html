@@ -30,7 +30,70 @@
 		<header></header>
 		
 		<main>
+			<section class="web-form">
+				<h1>Starbase</h1>
+				<p>
+					Starbase is an extensible web application.
+					It supports multiple languages such as English,
+					French, Chinese, and more.
+				</p>
+				<section class="duo">
+					<img src="/screens/sample-english.png" />
+					<img src="/screens/sample-thai.png" />
+				</section>
+				
+				<p>
+					The backend code written in Java, using Rockstar
+					framework. The reference web server is Bobcat,
+					which has been included in this project.
+				</p>
+				
+				<p>
+					The dictionary is in the table "translations",
+					as follow:
+				</p>
+				<pre>
+.---------.------------.----------------.----------------------.
+| number  | code       | language       | text                 |
+'---------'------------'----------------'----------------------'
+  1         home         en-us            Home
+  2         home         th-th            <span class="thai">หน้าแรก</span>
+  3         language     en-us            Language
+  4         language     th-th            <span class="thai">ภาษา</span>
+  .
+  .
+				</pre>
+			</section>
 			
+			<style>
+				.web-form {
+					max-width: 60%;
+					padding: 3rem;
+					padding-bottom: 1rem;
+					margin-top: 6rem;
+					margin-bottom: 6rem;
+				}
+				.web-form p {
+					color: #333;
+				}
+				.duo {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+					column-gap: 1rem;
+				}
+				img {
+					max-width: 100%;
+					border-radius: .5rem;
+					border: .1rem solid #bbb;
+				}
+				pre {
+					font-size: 1rem;
+					line-height: 1.5rem;
+				}
+				.thai {
+					font-family: sarabun;
+				}
+			</style>
 		</main>
 		
 		<#include "footer.html">
