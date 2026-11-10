@@ -19,4 +19,17 @@ Then open web browser to http://localhost:7501
 
 This project supports multiple languages.
 
-![](web/screens/sample-thai.png)
+![](web/screens/cover.png)
+
+The dictionary is in the table "translations", as follow:
+```
+.---------.------------.----------------.----------------------.
+| number  | code       | language       | text                 |
+'---------'------------'----------------'----------------------'
+  1         home         en-us            Home
+  2         home         th-th            <span class="thai">หน้าแรก</span>
+  3         language     en-us            Language
+  4         language     th-th            <span class="thai">ภาษา</span>
+  .
+  .
+```
