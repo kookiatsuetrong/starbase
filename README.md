@@ -27,9 +27,9 @@ The dictionary is in the table "translations", as follow:
 | number  | code       | language       | text                 |
 '---------'------------'----------------'----------------------'
   1         home         en-us            Home
-  2         home         th-th            <span class="thai">หน้าแรก</span>
+  2         home         th-th            หน้าแรก
   3         language     en-us            Language
-  4         language     th-th            <span class="thai">ภาษา</span>
+  4         language     th-th            ภาษา
   .
   .
 ```
