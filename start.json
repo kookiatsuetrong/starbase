@@ -1,3 +1,5 @@
 {
-"connectionString": "jdbc:mysql://127.0.0.1/online?user=me&password=password"
+	"connectionString": 
+		"jdbc:mysql://127.0.0.1/online?user=me&password=password",
+	"modules": ["SampleModule"]
 }

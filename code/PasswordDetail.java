@@ -35,30 +35,6 @@ class PasswordDetail {
 	}
 	
 	/*
-	public static ArrayList<String> find(int detail) {
-		ArrayList<String> result = new ArrayList<>();
-		
-		if ((detail & TOO_SHORT) == TOO_SHORT) {
-			result.add("Password length must be at least 8 characters.");
-		}
-		if ((detail & TOO_LONG) == TOO_LONG) {
-			result.add("Password is too long.");
-		}
-		if ((detail & AT_LEAST_ONE_DIGIT) == AT_LEAST_ONE_DIGIT) {
-			result.add("Password must contains at least one digit.");
-		}
-		if ((detail & AT_LEAST_ONE_UPPERCASE) == AT_LEAST_ONE_UPPERCASE) {
-			result.add("Password must contains at least one uppercase.");
-		}
-		if ((detail & AT_LEAST_ONE_LOWERCASE) == AT_LEAST_ONE_LOWERCASE) {
-			result.add("Password must contains at least one lowercase.");
-		}
-		
-		return result;
-	}
-	*/
-	
-	/*
 	password-too-long
 	password-too-short
 	password-has-no-digit

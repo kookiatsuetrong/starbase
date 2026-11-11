@@ -22,6 +22,8 @@ Translation.refresh();
 import java.io.FileReader;
 import java.util.HashMap;
 import java.sql.DriverManager;
+import java.util.ArrayList;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 class Settings {
@@ -34,8 +36,8 @@ class Settings {
 			FileReader reader = new FileReader("start.json");
 			buffer = reader.readAllAsString();
 			reader.close();
-		} catch (Exception e) { 
-			System.out.println("FATAL ERROR");
+		} catch (Exception e) {
+			System.out.println("fatal-error");
 			System.out.println(e);
 		}
 		
@@ -57,7 +59,7 @@ class Settings {
 			rs.close(); ps.close(); cn.close();
 					
 		} catch (Exception e) {
-			System.out.println("FATAL ERROR");
+			System.out.println("fatal-error");
 			System.out.println(e);
 		}
 		
@@ -102,7 +104,18 @@ class Settings {
 			Storage.languageAlias.add(lang.alias);
 		}
 		
+		modules.clear();
+		
+		JSONArray data = (JSONArray)detail.getJSONArray("modules");
+		int n = data.length();
+		for (int i = 0; i < n; i++) {
+			String name = data.getString(i);
+			System.out.println("Module " + name);
+			modules.add(name);
+		}
 	}
+	
+	static ArrayList<String> modules = new ArrayList<>();
 	
 	static String get(String name) {
 		String value = map.get(name);

@@ -29,8 +29,7 @@ class Start {
 		*/
 		
 		// Add module
-		String [] modules = { "SampleModule" };
-		for (String name : modules) {
+		for (String name : Settings.modules) {
 			try {
 				Class<?> clz = Class.forName(name);
 				Constructor<?> cns = clz.getDeclaredConstructor();

@@ -34,8 +34,10 @@ class Translation {
 			
 			for (String key : defaultMap.keySet()) {
 				if (current.containsKey(key)) {
+					/*
 					System.out.println("Language " + language + 
 										" has " + key);
+					*/
 				}
 				if (current.containsKey(key) == false) {
 					String value = defaultMap.get(key);
