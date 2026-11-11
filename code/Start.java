@@ -28,7 +28,7 @@ class Start {
 		System.out.println(t);
 		*/
 		
-		// Add module
+		// Add modules
 		for (String name : Settings.modules) {
 			try {
 				Class<?> clz = Class.forName(name);
