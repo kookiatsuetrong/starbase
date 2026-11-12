@@ -20,5 +20,5 @@ mv modules/sample/code/*.class runtime
 mv code/*.class runtime
 
 # run
-java --class-path $RUNTIME Bobcat --home web --port 7601 \
+java --class-path $RUNTIME Bobcat --home web --port 7501 \
 --deployment-descriptor web.xml

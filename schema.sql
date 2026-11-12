@@ -1,10 +1,10 @@
-create user me identified by 'password';
--- drop database callable;
+-- create user me identified by 'password';
+-- drop database starbase;
 
-create database online default character set 'UTF8';
-grant all on online.* to me;
+create database starbase default character set 'UTF8';
+grant all on starbase.* to me;
 
-use online;
+use starbase;
 
 create table users
 (
@@ -43,9 +43,6 @@ values('user@email.com', sha2('User1234', 512),
 update users set administrator='T', staff='T'
 where email='user@email.com';
 
--- create table manages();  /* user manages shop     */
--- create table works();    /* user works for a shop */
-
 create table languages
 (
 	number        bigint unique not null auto_increment,
@@ -82,9 +79,6 @@ create table currencies
 insert into currencies(alias, name, symbol) values('USD', 'US Dollar', '$');
 insert into currencies(alias, name, symbol) values('THB', 'Thai Baht', '฿');
 
-
--- alter table order_items auto_increment 801048576;
-
 create table settings
 (
 	number        bigint unique not null auto_increment,
@@ -93,10 +87,11 @@ create table settings
 );
 
 insert into settings(name, value) values('default-language', 'en-us');
+
 insert into settings(name, value) values('full-web-site', 'https://online.com');
-insert into settings(name, value) values('support-email',  'support@email.com');
-insert into settings(name, value) values('email-server',   'mail.email.com');
-insert into settings(name, value) values('email-sender',   'support@email.com');
+insert into settings(name, value) values('support-email', 'support@email.com');
+insert into settings(name, value) values('email-server',  'mail.email.com');
+insert into settings(name, value) values('email-sender',  'support@email.com');
 
 insert into settings(name, value) values('email-port',        '587');
 insert into settings(name, value) values('email-sender-name', 'Administrator');
@@ -105,6 +100,7 @@ insert into settings(name, value) values('email-protocol',    'TLSv1.2');
 insert into settings(name, value) values('email-auth',        'true');
 insert into settings(name, value) values('email-tls',         'true');
 
+-- prevent password hacking
 create table password_trials
 (
 	number      bigint unique not null auto_increment,
@@ -114,7 +110,6 @@ create table password_trials
 
 -- select * from password_trials 
 -- where happened >= utc_timestamp() - interval 60 minute;
-
 
 create table translations
 (
@@ -126,8 +121,6 @@ create table translations
 
 -- insert into translations(language,code,text) value('en-us', 'home', 'Home');
 -- insert into translations(language,code,text) value('th-th', 'home', 'หน้าแรก');
-
-insert into translations select * from callable.translations;
 
 
 -- The End

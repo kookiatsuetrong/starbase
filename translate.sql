@@ -1,4 +1,5 @@
-use online;
+use starbase;
+
 insert into translations(language,code,text) value('en-us', 'privacy-policy', 'Privacy Policy');
 insert into translations(language,code,text) value('th-th', 'privacy-policy', 'นโยบายส่วนบุคคล');
 insert into translations(language,code,text) value('en-us', 'term-of-service', 'Term of Service');
