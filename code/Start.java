@@ -105,6 +105,7 @@ class Start {
 		// In-Shop User Management
 		// handle( "GET /manage-staff", StaffHandler.manage);
 		
+		handle( "GET /service-translate", WebService::translate);
 		handle( "GET /empty", Start::showEmpty);
 		
 		addFallback(Start::showUser);

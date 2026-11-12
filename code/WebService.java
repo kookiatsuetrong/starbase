@@ -1,5 +1,6 @@
 import java.util.TreeMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import web.framework.Context;
 
 class WebService {
@@ -44,6 +45,27 @@ class WebService {
 		result.put("result", "OK");
 		result.put("status", status);
 		result.put("signature", signature);
+		return result;
+	}
+	
+	
+	static Object
+	translate(Context context) {
+		String code = context.getParameter("code");
+		String language = context.getParameter("language");
+
+		TreeMap<String, Object> result = new TreeMap<>();
+		result.put("result",   "OK");
+		result.put("code",     code);
+		result.put("language", language);
+		result.put("text", "");
+		
+		HashMap<String, String> list = Translation.map.get(language);
+		if (list == null) return result;
+		String text = list.get(code);
+		if (text == null) text = "";
+		result.put("text", text);
+		
 		return result;
 	}
 	

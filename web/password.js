@@ -72,7 +72,7 @@ class Password {
 	
 	onKeyUp(event) {
 		var length = this.element.value.length
-		this.clearHint()		
+		this.clearHint()
 		if (length == 0) return
 		
 		var passed = true

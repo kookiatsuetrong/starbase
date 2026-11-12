@@ -116,6 +116,17 @@
 			
 			<script>
 				
+				async function translate(code, language) {
+					var location = "/service-translate" +
+										"?language=" + language + 
+										"&code=" + code
+
+					var response = await fetch(location)
+					var result   = await response.json()
+					console.log(result)
+					return result
+				}
+				
 				getCurrentLanguage()
 				
 				async function getCurrentLanguage() {
