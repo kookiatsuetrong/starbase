@@ -278,7 +278,7 @@ h3 { font-size: 1.50rem; font-weight: 400; margin: 0; }
 	*/
 	/* blue */
 	--brand-color: rgba(32, 160, 220, 1);
-	--brand-light: rgba(32, 160, 220, .1);
+	--brand-light: rgba(32, 160, 220, .75);
 
 	/* purple */
 	/* --brand-color: rgba( 120, 60, 200, 1); */
