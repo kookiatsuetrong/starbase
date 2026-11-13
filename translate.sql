@@ -188,6 +188,8 @@ insert into translations(language,code,text) value('en-us', 'incorrect-current-p
 insert into translations(language,code,text) value('th-th', 'incorrect-current-password', 'รหัสผ่านปัจจุบันไม่ถูกต้อง');
 insert into translations(language,code,text) value('en-us', 'change-password-success', 'Password has been changed.');
 insert into translations(language,code,text) value('th-th', 'change-password-success', 'รหัสผ่านถูกเปลี่ยนเรียบร้อย');
+insert into translations(language,code,text) value('en-us', 'password-correct', 'Password is correct.');
+insert into translations(language,code,text) value('th-th', 'password-correct', 'รหัสผ่านถูกต้อง');
 insert into translations(language,code,text) value('en-us', 'permission-denied', 'Permission denied.');
 insert into translations(language,code,text) value('th-th', 'permission-denied', 'ไม่มีสิทธิเข้าถึงข้อมูล');
 insert into translations(language,code,text) value('en-us', 'incorrect-photo-code', 'Incorrect number from the right hand side.');
@@ -244,6 +246,8 @@ insert into translations(language,code,text) value('en-us', 'password-has-no-upp
 insert into translations(language,code,text) value('th-th', 'password-has-no-uppercase', 'รหัสผ่านต้องมีตัวอักษรใหญ่ อย่างน้อย 1 ตัว');
 insert into translations(language,code,text) value('en-us', 'password-has-no-lowercase', 'The password must contains at least one lowercase.');
 insert into translations(language,code,text) value('th-th', 'password-has-no-lowercase', 'รหัสผ่านต้องมีตัวอักษรเล็ก อย่างน้อย 1 ตัว');
+insert into translations(language,code,text) value('en-us', 'password-has-no-symbol', 'The password must contains at least one symbol.');
+insert into translations(language,code,text) value('th-th', 'password-has-no-symbol', 'รหัสผ่านต้องมีตัวสัญลักษณ์ อย่างน้อย 1 ตัว');
 insert into translations(language,code,text) value('en-us', 'activation-code', 'Activation Code');
 insert into translations(language,code,text) value('th-th', 'activation-code', 'รหัส Activation Code');
 insert into translations(language,code,text) value('en-us', 'activation-code-hint', 'Activation Code from email');

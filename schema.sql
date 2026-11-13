@@ -1,4 +1,4 @@
-create user me identified by 'password';
+-- create user me identified by 'password';
 -- drop database starbase;
 
 create database starbase default character set 'UTF8';
