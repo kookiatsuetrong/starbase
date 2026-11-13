@@ -54,50 +54,52 @@ class DialogStyle {
 	}
 }
 
-var translate = { }
+var dialog = { }
+dialog.translate = { }
 
-translate["yes"] = { }
-translate["yes"]["en-us"] = "Yes"
-translate["yes"]["th-th"] = "ใช่"
+dialog.translate["yes"] = { }
+dialog.translate["yes"]["en-us"] = "Yes"
+dialog.translate["yes"]["th-th"] = "ใช่"
 
-translate["no"] = { }
-translate["no"]["en-us"] = "No"
-translate["no"]["th-th"] = "ไม่"
+dialog.translate["no"] = { }
+dialog.translate["no"]["en-us"] = "No"
+dialog.translate["no"]["th-th"] = "ไม่"
 
-translate["close"] = { }
-translate["close"]["en-us"] = "Close"
-translate["close"]["th-th"] = "ปิด"
+dialog.translate["close"] = { }
+dialog.translate["close"]["en-us"] = "Close"
+dialog.translate["close"]["th-th"] = "ปิด"
 
-translate["cancel"] = { }
-translate["cancel"]["en-us"] = "Cancel"
-translate["cancel"]["th-th"] = "ยกเลิก"
+dialog.translate["cancel"] = { }
+dialog.translate["cancel"]["en-us"] = "Cancel"
+dialog.translate["cancel"]["th-th"] = "ยกเลิก"
 
-translate["save"] = { }
-translate["save"]["en-us"] = "Save"
-translate["save"]["th-th"] = "บันทึก"
+dialog.translate["save"] = { }
+dialog.translate["save"]["en-us"] = "Save"
+dialog.translate["save"]["th-th"] = "บันทึก"
 
-translate["notification"] = { }
-translate["notification"]["en-us"] = "Notification"
-translate["notification"]["th-th"] = "แจ้งเตือน"
+dialog.translate["notification"] = { }
+dialog.translate["notification"]["en-us"] = "Notification"
+dialog.translate["notification"]["th-th"] = "แจ้งเตือน"
 
-translate["confirmation"] = { }
-translate["confirmation"]["en-us"] = "Confirmation"
-translate["confirmation"]["th-th"] = "คำถามยืนยัน"
+dialog.translate["confirmation"] = { }
+dialog.translate["confirmation"]["en-us"] = "Confirmation"
+dialog.translate["confirmation"]["th-th"] = "คำถามยืนยัน"
 
-translate["editor"] = { }
-translate["editor"]["en-us"] = "Text Editor"
-translate["editor"]["th-th"] = "แก้ไขข้อความ"
+dialog.translate["editor"] = { }
+dialog.translate["editor"]["en-us"] = "Text Editor"
+dialog.translate["editor"]["th-th"] = "แก้ไขข้อความ"
 
-translate["choose-language"] = { }
-translate["choose-language"]["en-us"] = "Choose Language"
-translate["choose-language"]["th-th"] = "เลือกภาษา"
+dialog.translate["choose-language"] = { }
+dialog.translate["choose-language"]["en-us"] = "Choose Language"
+dialog.translate["choose-language"]["th-th"] = "เลือกภาษา"
 
 class Translate {
 	
 	static get(text, language) {
-		var result = translate[text][language]
+
+		var result = dialog.translate[text][language]
 		if (result == null) {
-			result = translate[text]["en-us"]
+			result = dialog.translate[text]["en-us"]
 		}
 		if (result == null) {
 			result = text
