@@ -54,6 +54,9 @@ class Translation {
 	public static HashMap<String, String>
 	getTranslation(String alias) {
 		HashMap<String, String> language = map.get(alias);
+		if (language == null) {
+			language = map.get(defaultLanguage);
+		}
 		return language;
 	}
 	
