@@ -1,0 +1,82 @@
+
+
+Starbase Test Case
+------------------
+
+Valid Password
+- From 8 to 20 characters
+- With at least 1 digit
+- With at least 1 uppercase
+- With at least 1 lowercase
+- With or without symbol
+
+Create Account
+1. Create Account with click on "Try Again"
+   -- refresh the page
+
+2. Create Account with registered email
+   -- redirect to log in
+
+3. Create Account with incorrect photo code
+   -- show warning and refresh the page
+
+4. Create Account with incorrect activation code
+   -- show warning (user can re-enter the activation code)
+
+5. Create Account with invalid password
+   -- show warning
+
+6. Create Account with short name
+   -- show warning
+
+7. Create Account with very long name
+   -- show warning
+
+Log In
+1. Log In with click on "Try Again"
+   -- refresh the page
+
+2. Log In with incorrect photo code
+   -- show warning and refresh the page
+
+3. Log In with unregistered email
+   -- redirect to create account
+
+4. Log In with incorrect password
+   -- show warning and restart the process
+
+5. Log In with very long password
+   -- process as usual password
+
+
+Log Out
+1. Log Out
+   -- user will not be able to go to the profile page
+
+Reset Password
+1. Reset Password with click on "Try Again"
+   -- refresh the page
+
+2. Reset Password with unregistered email
+   -- show warning (email not found)
+
+3. Reset Password with incorrect photo code
+   -- show warning and refresh the page
+
+4. Reset Password with incorrect activation code
+   -- show warning and restart the process
+
+5. Reset Password with invalid password
+   -- show warning
+
+
+Remove Account
+1. Remove Account
+   -- user will not be able to log in again
+
+2. Remove Account with incorrect password
+   -- show warning
+
+Gmail Log In
+- Gmail Log In by click only one button
+
