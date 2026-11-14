@@ -114,9 +114,30 @@ Engine:     FreeMarker
 		<#include "footer.html">
 		
 	</body>
+	
+	<script src="/password.js"></script>
+	
 	<script>
+		
 		var language     = "${language}"
 		var languageLink = "${languageLink}"
+		
+		start()
+		
+		async function start() {
+			var passwordElement = document.querySelector("#password")
+			
+			var password = new Password(passwordElement)
+			password.setMinimumLength( 8)
+			password.setMaximumLength(20)
+			password.setNumeric(true)
+			password.setUpperCase(true)
+			password.setLowerCase(true)
+			password.setSymbol(false)
+			password.setLanguage(language)
+			await password.translate()
+		}
+		
 
 		var messages = { }
 		messages["invalid-user"]               = "${invalidUser}"

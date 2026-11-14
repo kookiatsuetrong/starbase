@@ -30,7 +30,9 @@ thirdPassword.setConfirmPassword(secondPassword)
 
 class Password {
 
-	element     // or = document.createElement("input")
+	element = null
+	// element = document.createElement("input")
+	
 	identifier = parseInt(Math.random() * 1000000)
 	rules   = { }
 	
@@ -200,7 +202,7 @@ class Password {
 		if (passed == true) {
 			target = document.createElement("section")
 			target.setAttribute("id", "password-correct-" + this.identifier)
-			target.innerText = this.text["password-correct"]
+			target.innerText = this.["password-correct"]
 			this.element.after(target)
 			target.style.background = "#f8fff8"
 			target.style.borderRadius = ".5rem"
@@ -241,7 +243,7 @@ class Password {
 		
 		var hint = document.createElement("span")
 		hint.style.display = "block"
-		hint.innerText = this.text[text]
+		hint.innerText = this.[text]
 		
 		target.appendChild(hint)
 	}
@@ -252,31 +254,31 @@ class Password {
 		this.confirmPassword = e
 	}
 	
-	language = "identifier"
+	language = "en-us"
 	
 	setLanguage(lang) {
 		this.language = lang
 	}
 	
-	text = { }
+	 = { }
 	
 	async translate() {
-		this.text["password-too-short"]        = "password-too-short"
-		this.text["password-too-long"]         = "password-too-long"
-		this.text["password-has-no-digit"]     = "password-has-no-digit"
-		this.text["password-has-no-uppercase"] = "password-has-no-uppercase"
-		this.text["password-has-no-lowercase"] = "password-has-no-lowercase"
-		this.text["password-has-no-symbol"]    = "password-has-no-symbol"
-		this.text["password-not-identical"]    = "password-not-identical"
-		this.text["password-correct"]          = "password-correct"
+		this.["password-too-short"]        = "password-too-short"
+		this.["password-too-long"]         = "password-too-long"
+		this.["password-has-no-digit"]     = "password-has-no-digit"
+		this.["password-has-no-uppercase"] = "password-has-no-uppercase"
+		this.["password-has-no-lowercase"] = "password-has-no-lowercase"
+		this.["password-has-no-symbol"]    = "password-has-no-symbol"
+		this.["password-not-identical"]    = "password-not-identical"
+		this.["password-correct"]          = "password-correct"
 		
-		for (var k in this.text) {
+		for (var k in this.) {
 			var location = "/service-translate?language=" + this.language + 
 								"&code=" + k
 			var response = await fetch(location)
 			var detail   = await response.json()
 			if (detail.result == "OK") {
-				this.text[k] = detail.text
+				this.[k] = detail.text
 			}
 		}
 	}

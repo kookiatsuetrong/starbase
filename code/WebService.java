@@ -66,6 +66,8 @@ class WebService {
 		if (text == null) text = "";
 		result.put("text", text);
 		
+		System.out.println(result);
+		
 		return result;
 	}
 	
