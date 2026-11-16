@@ -37,10 +37,17 @@ class Email {
 
 		Settings.refresh();
 		
-		// Send email
+		// For small project, send email directly
+		/*
 		EmailSender e = new EmailSender(recipient, subject, text, html);
 		e.start();
+		*/
+		
+		// For large project, add to database, and run the program to send it
+		Storage.queueEmail(recipient, subject, text, html);
 	}
+	
+	
 	
 	static String
 	readEmail(String fileName, String extension, String language) {

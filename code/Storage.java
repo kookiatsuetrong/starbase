@@ -515,4 +515,33 @@ class Storage {
 	
 		return status;
 	}
+	
+	static boolean
+	queueEmail(String address, String subject, String text, String html) {
+		
+		if (address == null) return false;
+		if (subject == null) subject = "Subject";
+		if (text    == null) text = "";
+		if (html    == null) html = text;
+		
+		try {
+			String s =  " insert into emails(           " +
+						" address, subject, text, html) " +
+						" values(?, ?, ?, ?)            ";
+			
+			var cn = DriverManager.getConnection(source);
+			var ps = cn.prepareStatement(s);
+			ps.setString(1, address);
+			ps.setString(2, subject);
+			ps.setString(3, text);
+			ps.setString(4, html);
+			ps.execute();
+			ps.close();
+			cn.close();
+			return true;
+		} catch (Exception e) { }
+		
+		return false;
+	}
+	
 }

@@ -122,5 +122,18 @@ create table translations
 -- insert into translations(language,code,text) value('en-us', 'home', 'Home');
 -- insert into translations(language,code,text) value('th-th', 'home', 'หน้าแรก');
 
+-- recipient, subject, text, html
+
+create table emails
+(
+	number        bigint unique not null auto_increment,
+	address       varchar( 200),
+	subject       varchar( 200),
+	text          varchar(2000),
+	html          varchar(2000),
+	status        varchar( 200) default 'created',
+	created       datetime default (utc_timestamp())
+);
+
 
 -- The End
