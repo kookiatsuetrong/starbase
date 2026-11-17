@@ -66,6 +66,8 @@ class Start {
 		handle( "GET /user-signature", UserHandler::showSignature);
 		handle( "GET /user-status",    UserHandler::showStatus);
 		
+		handle( "GET /user-management", UserHandler::manageUser);
+		
 		handle( "GET /service-list-languages", 
 										WebService::listLanguages);
 		
@@ -108,6 +110,9 @@ class Start {
 		
 		// In-Shop User Management
 		// handle( "GET /manage-staff", StaffHandler.manage);
+		
+		// Administrator Service
+		handle( "GET /service-ban-user",  UserService::banUser);
 		
 		handle( "GET /service-translate", WebService::translate);
 		handle( "GET /empty", Start::showEmpty);

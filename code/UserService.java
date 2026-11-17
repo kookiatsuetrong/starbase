@@ -828,6 +828,33 @@ class UserService {
 		return Tool.createError("unable-to-update-status");
 	}
 	
+	/**
+	 * Ban the given user
+	 * 
+	 * This service for administrator only
+	 * 
+	 * /service-ban-user
+	 * 
+	 */
+	static Object
+	banUser(Context context) {
+		User user = (User)context.getSession("user");
+		if (user == null) return Tool.createError("invalid-user");
+		
+		if (user.isAdministrator() == false) {
+			return Tool.createError("permission-denied");
+		}
+		
+		String identifier = context.getParameter("identifier");
+		System.out.println("Identifier = " + identifier);
+		boolean result = Storage.banUser(identifier);
+		if (result == true) {
+			return Tool.createSuccess("update-status-successfully");		
+		}
+		
+		return Tool.createError("unable-to-update-status");
+	}
+	
 	
 	/**
 	 * Checks whether the give instance is valid

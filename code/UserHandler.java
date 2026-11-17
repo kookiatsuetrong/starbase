@@ -123,5 +123,20 @@ class UserHandler {
 		var model = Start.createModel(context);
 		return Freemarker.render("/web/user-status.html", model);
 	}
+	
+	static Object manageUser(Context context) {
+		User user = (User)context.getSession("user");
+		String language = (String)context.request.getAttribute("language");
+		if (user == null) return new Redirect("/" + language + "/ask-email");
+		
+		if (user.isAdministrator() == true) {
+			ArrayList<User> all = Storage.getUsers();
+			var model = Start.createModel(context);
+			model.put("users", all);
+			return Freemarker.render("/web/user-management.html", model);
+		}
+
+		return new Redirect("/notify?message=Permission Denied");
+	}
 
 }

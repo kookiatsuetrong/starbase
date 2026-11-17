@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<#--
+
+File:       user-photo.html
+
+Path:       /photo
+			/en-us/photo
+
+Controller: UserHandler.manageUser()
+
+Model:      language  : String e.g. "en-us", "de-ch", "th-th"
+			translate : Map (String -> String)
+
+Engine:     FreeMarker
+
+-->
+
+<#setting number_format = "computer"        >
+<#assign language       = language ! "en-us">
+<#assign languageLink   = "/" + language    >
+<#assign title          = "User Management" >
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>${title}</title>
+		<link rel="stylesheet" href="/normalize.css" />
+		<link rel="stylesheet" href="/main.css" />
+	</head>
+	<body>
+		<#include "header.html">
+		
+		<main>
+			<section class="container">
+				<h3>${title}</h3>
+				
+				<#list users as u>
+				<section class="item">
+					${u.email}
+					${u.status}
+					
+					<#assign userType = "User">
+					
+					<#if u.administrator == true>
+					<#assign userType = "Administrator">
+					</#if>
+					
+					${userType}
+					<a href="javascript:banUser('${u.identifier}')"
+						>Ban User</a> 
+				</section>
+				</#list>
+			</section>
+			
+			<style>
+				.item {
+					background: rgba(0, 0, 0, .1);
+					border-radius: .5rem;
+					padding: 1rem;
+					margin-top: 1rem;
+				}
+				.item a {
+					font-weight: bold;
+				}
+			</style>
+			
+			<script>
+				async function banUser(user) {
+					var location = "/service-ban-user?identifier=" + user
+					var response = await fetch(location)
+					var detail   = await response.json()
+					console.log(detail)
+					
+					// TODO: refresh this item
+					
+				}
+				
+				async function unbanUser(number) {
+					var location = "/service-unban-user?number" + number
+					var response = await fetch(location)
+					var detail   = await response.json()
+					console.log(detail)
+					
+					// TODO: refresh this item
+					
+				}
+			</script>
+			
+		</main>
+		
+		<#include "footer.html">
+	</body>
+	
+</html>

@@ -71,6 +71,47 @@ class Storage {
 		return map;
 	}
 	
+	
+	static ArrayList<User>
+	getUsers() {
+		ArrayList<User> result = new ArrayList<>();
+		
+		try {
+			var sql = " select * from users ";
+			var cn = DriverManager.getConnection(source);
+			var ps = cn.prepareStatement(sql);
+
+			var rs = ps.executeQuery();
+			while (rs.next()) {
+				User user       = new User();
+				user.number     = rs.getLong  ("number");
+				user.email      = rs.getString("email");
+				user.password   = rs.getString("password");
+				user.firstName  = rs.getString("first_name");
+				user.lastName   = rs.getString("last_name");
+				user.status     = rs.getString("status");
+				user.language   = rs.getString("language");
+				user.signature  = rs.getString("signature");
+				user.theme      = rs.getString("theme");
+				user.identifier = rs.getLong  ("identifier");
+				
+				String buffer;
+				
+				buffer             = rs.getString("administrator");
+				buffer             = buffer == null ? "F" : buffer;
+				user.administrator = buffer.charAt(0) == 'T';
+				
+				buffer             = rs.getString("staff");
+				buffer             = buffer == null ? "F" : buffer;
+				user.staff         = buffer.charAt(0) == 'T';
+				
+				result.add(user);
+			}
+			rs.close(); ps.close(); cn.close();
+		} catch (Exception e) { }
+		return result;
+	}
+	
 	static User 
 	getUserByEmail(String email) {
 		if (email == null) return null;
@@ -541,6 +582,28 @@ class Storage {
 			return true;
 		} catch (Exception e) { }
 		
+		return false;
+	}
+	
+	
+	static boolean
+	banUser(String identifier) {
+		if (identifier == null) return false;
+		
+		try {
+			var sql =   " update users          " +
+						" set status = 'banned' " +
+						" where identifier = ?  ";
+			var cn = DriverManager.getConnection(source);
+			var ps = cn.prepareStatement(sql);
+			ps.setString(1, identifier);
+			ps.execute();
+			ps.close(); cn.close();
+			return true;
+		} catch (Exception e) { 
+			System.out.println(e);
+		}
+
 		return false;
 	}
 	
