@@ -39,11 +39,17 @@ Engine:     FreeMarker
 				<section class="item">
 					${u.email}
 					
-					<#assign userType = "User">
+					<#assign readiness = "Busy">
+					<#if u.ready == true>
+					<#assign readiness = "Ready">
+					</#if>
+					(${readiness})
 					
+					<#assign userType = "User">
 					<#if u.administrator == true>
 					<#assign userType = "Administrator">
 					</#if>
+					
 					
 					<#if u.active>
 						<a href="javascript:banUser('${u.identifier}')"

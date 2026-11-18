@@ -14,6 +14,7 @@ public class User {
 	String theme;
 	String language;
 	boolean active;
+	boolean ready;
 	
 	public long   getNumber()     { return number;     }
 	public String getEmail()      { return email;      }
@@ -25,6 +26,7 @@ public class User {
 	public String getTheme()      { return theme;      }
 	public String getLanguage()   { return language;   }
 	public boolean isActive()     { return active;     }
+	public boolean isReady()      { return ready;      }
 	
 	boolean administrator;
 	boolean staff;

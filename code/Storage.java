@@ -101,6 +101,10 @@ class Storage {
 				buffer             = buffer == null ? "F" : buffer;
 				user.active        = buffer.charAt(0) == 'T';
 				
+				buffer             = rs.getString("ready");
+				buffer             = buffer == null ? "F" : buffer;
+				user.ready         = buffer.charAt(0) == 'T';
+				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
 				user.administrator = buffer.charAt(0) == 'T';
@@ -145,6 +149,10 @@ class Storage {
 				buffer             = buffer == null ? "F" : buffer;
 				user.active        = buffer.charAt(0) == 'T';
 				
+				buffer             = rs.getString("ready");
+				buffer             = buffer == null ? "F" : buffer;
+				user.ready         = buffer.charAt(0) == 'T';
+				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
 				user.administrator = buffer.charAt(0) == 'T';
@@ -187,6 +195,10 @@ class Storage {
 				buffer             = rs.getString("active");
 				buffer             = buffer == null ? "F" : buffer;
 				user.active        = buffer.charAt(0) == 'T';
+				
+				buffer             = rs.getString("ready");
+				buffer             = buffer == null ? "F" : buffer;
+				user.ready         = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
@@ -250,6 +262,10 @@ class Storage {
 				buffer             = rs.getString("active");
 				buffer             = buffer == null ? "F" : buffer;
 				user.active        = buffer.charAt(0) == 'T';
+				
+				buffer             = rs.getString("ready");
+				buffer             = buffer == null ? "F" : buffer;
+				user.ready         = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
