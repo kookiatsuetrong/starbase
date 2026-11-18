@@ -577,6 +577,45 @@ class Storage {
 	}
 	
 	static boolean
+	banUser(String identifier) {
+		if (identifier == null) return false;
+		
+		try {
+			var sql =   " update users          " +
+						" set active = 'F'      " +
+						" where identifier = ?  ";
+			var cn = DriverManager.getConnection(source);
+			var ps = cn.prepareStatement(sql);
+			ps.setString(1, identifier);
+			ps.execute();
+			ps.close(); cn.close();
+			return true;
+		} catch (Exception e) { }
+
+		return false;
+	}
+	
+	// unban user
+	static boolean
+	activateUser(String identifier) {
+		if (identifier == null) return false;
+		
+		try {
+			var sql =   " update users          " +
+						" set active = 'T'      " +
+						" where identifier = ?  ";
+			var cn = DriverManager.getConnection(source);
+			var ps = cn.prepareStatement(sql);
+			ps.setString(1, identifier);
+			ps.execute();
+			ps.close(); cn.close();
+			return true;
+		} catch (Exception e) { }
+
+		return false;
+	}
+	
+	static boolean
 	queueEmail(String address, String subject, String text, String html) {
 		
 		if (address == null) return false;
@@ -601,28 +640,6 @@ class Storage {
 			return true;
 		} catch (Exception e) { }
 		
-		return false;
-	}
-	
-	
-	static boolean
-	banUser(String identifier) {
-		if (identifier == null) return false;
-		
-		try {
-			var sql =   " update users          " +
-						" set active = 'F'      " +
-						" where identifier = ?  ";
-			var cn = DriverManager.getConnection(source);
-			var ps = cn.prepareStatement(sql);
-			ps.setString(1, identifier);
-			ps.execute();
-			ps.close(); cn.close();
-			return true;
-		} catch (Exception e) { 
-			System.out.println(e);
-		}
-
 		return false;
 	}
 	

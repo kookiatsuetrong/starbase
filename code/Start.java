@@ -112,7 +112,8 @@ class Start {
 		// handle( "GET /manage-staff", StaffHandler.manage);
 		
 		// Administrator Service
-		handle( "GET /service-ban-user",  UserService::banUser);
+		handle( "GET /service-ban-user",      UserService::banUser);
+		handle( "GET /service-activate-user", UserService::activateUser);
 		
 		handle( "GET /service-translate", WebService::translate);
 		handle( "GET /empty", Start::showEmpty);

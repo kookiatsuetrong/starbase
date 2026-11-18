@@ -38,7 +38,6 @@ Engine:     FreeMarker
 				<#list users as u>
 				<section class="item">
 					${u.email}
-					${u.status}
 					
 					<#assign userType = "User">
 					
@@ -47,8 +46,19 @@ Engine:     FreeMarker
 					</#if>
 					
 					${userType}
-					<a href="javascript:banUser('${u.identifier}')"
-						>Ban User</a> 
+					
+					${u.status}
+					
+					<#if u.active>
+						<a href="javascript:banUser('${u.identifier}')"
+							>Ban User</a>
+					</#if>
+					
+					<#if u.active == false>
+						<a href="javascript:activateUser('${u.identifier}')"
+							>Activate User</a>
+					</#if>
+					
 				</section>
 				</#list>
 			</section>
@@ -76,8 +86,8 @@ Engine:     FreeMarker
 					
 				}
 				
-				async function unbanUser(number) {
-					var location = "/service-unban-user?number" + number
+				async function activateUser(user) {
+					var location = "/service-activate-user?identifier=" + user
 					var response = await fetch(location)
 					var detail   = await response.json()
 					console.log(detail)

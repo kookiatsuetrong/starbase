@@ -826,7 +826,7 @@ class UserService {
 	}
 	
 	/**
-	 * Ban the given user
+	 * Bans the given user
 	 * 
 	 * This service for administrator only
 	 * 
@@ -843,7 +843,6 @@ class UserService {
 		}
 		
 		String identifier = context.getParameter("identifier");
-		System.out.println("Identifier = " + identifier);
 		boolean result = Storage.banUser(identifier);
 		if (result == true) {
 			return Tool.createSuccess("update-status-successfully");		
@@ -852,6 +851,32 @@ class UserService {
 		return Tool.createError("unable-to-update-status");
 	}
 	
+	
+	/**
+	 * Unbans the given user
+	 * 
+	 * This service for administrator only
+	 * 
+	 * /service-activate-user
+	 * 
+	 */
+	static Object
+	activateUser(Context context) {
+		User user = (User)context.getSession("user");
+		if (user == null) return Tool.createError("invalid-user");
+		
+		if (user.isAdministrator() == false) {
+			return Tool.createError("permission-denied");
+		}
+		
+		String identifier = context.getParameter("identifier");
+		boolean result = Storage.activateUser(identifier);
+		if (result == true) {
+			return Tool.createSuccess("update-status-successfully");		
+		}
+		
+		return Tool.createError("unable-to-update-status");
+	}
 	
 	/**
 	 * Checks whether the give instance is valid
