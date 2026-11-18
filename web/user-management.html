@@ -45,10 +45,6 @@ Engine:     FreeMarker
 					<#assign userType = "Administrator">
 					</#if>
 					
-					${userType}
-					
-					${u.status}
-					
 					<#if u.active>
 						<a href="javascript:banUser('${u.identifier}')"
 							>Ban User</a>
@@ -58,6 +54,12 @@ Engine:     FreeMarker
 						<a href="javascript:activateUser('${u.identifier}')"
 							>Activate User</a>
 					</#if>
+					
+					<br/>
+					${u.firstName}
+					${u.lastName}
+					
+					(${userType})
 					
 				</section>
 				</#list>
@@ -72,6 +74,10 @@ Engine:     FreeMarker
 				}
 				.item a {
 					font-weight: bold;
+					float: right;
+				}
+				.item a:hover {
+					color: #666;
 				}
 			</style>
 			
