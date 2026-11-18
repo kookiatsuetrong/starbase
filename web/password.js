@@ -202,7 +202,7 @@ class Password {
 		if (passed == true) {
 			target = document.createElement("section")
 			target.setAttribute("id", "password-correct-" + this.identifier)
-			target.innerText = this.["password-correct"]
+			target.innerText = this.text["password-correct"]
 			this.element.after(target)
 			target.style.background = "#f8fff8"
 			target.style.borderRadius = ".5rem"
@@ -243,7 +243,7 @@ class Password {
 		
 		var hint = document.createElement("span")
 		hint.style.display = "block"
-		hint.innerText = this.[text]
+		hint.innerText = this.text[text]
 		
 		target.appendChild(hint)
 	}
@@ -260,25 +260,25 @@ class Password {
 		this.language = lang
 	}
 	
-	 = { }
+	text = { }
 	
 	async translate() {
-		this.["password-too-short"]        = "password-too-short"
-		this.["password-too-long"]         = "password-too-long"
-		this.["password-has-no-digit"]     = "password-has-no-digit"
-		this.["password-has-no-uppercase"] = "password-has-no-uppercase"
-		this.["password-has-no-lowercase"] = "password-has-no-lowercase"
-		this.["password-has-no-symbol"]    = "password-has-no-symbol"
-		this.["password-not-identical"]    = "password-not-identical"
-		this.["password-correct"]          = "password-correct"
+		this.text["password-too-short"]        = "password-too-short"
+		this.text["password-too-long"]         = "password-too-long"
+		this.text["password-has-no-digit"]     = "password-has-no-digit"
+		this.text["password-has-no-uppercase"] = "password-has-no-uppercase"
+		this.text["password-has-no-lowercase"] = "password-has-no-lowercase"
+		this.text["password-has-no-symbol"]    = "password-has-no-symbol"
+		this.text["password-not-identical"]    = "password-not-identical"
+		this.text["password-correct"]          = "password-correct"
 		
-		for (var k in this.) {
+		for (var k in this.text) {
 			var location = "/service-translate?language=" + this.language + 
 								"&code=" + k
 			var response = await fetch(location)
 			var detail   = await response.json()
 			if (detail.result == "OK") {
-				this.[k] = detail.text
+				this.text[k] = detail.text
 			}
 		}
 	}

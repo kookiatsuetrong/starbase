@@ -97,6 +97,10 @@ class Storage {
 				
 				String buffer;
 				
+				buffer             = rs.getString("active");
+				buffer             = buffer == null ? "F" : buffer;
+				user.active        = buffer.charAt(0) == 'T';
+				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
 				user.administrator = buffer.charAt(0) == 'T';
@@ -137,6 +141,10 @@ class Storage {
 				
 				String buffer;
 				
+				buffer             = rs.getString("active");
+				buffer             = buffer == null ? "F" : buffer;
+				user.active        = buffer.charAt(0) == 'T';
+				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
 				user.administrator = buffer.charAt(0) == 'T';
@@ -175,6 +183,10 @@ class Storage {
 				user.identifier = rs.getLong  ("identifier");
 				
 				String buffer;
+				
+				buffer             = rs.getString("active");
+				buffer             = buffer == null ? "F" : buffer;
+				user.active        = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
@@ -234,6 +246,10 @@ class Storage {
 				user.identifier = rs.getLong  ("identifier");
 				
 				String buffer;
+				
+				buffer             = rs.getString("active");
+				buffer             = buffer == null ? "F" : buffer;
+				user.active        = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
@@ -513,14 +529,15 @@ class Storage {
 	*/
 	
 	static boolean
-	updateStatus(User user, String status) {
+	updateStatus(User user, boolean active) {
 		if (user == null) return false;
-		if (status == null) return false;
+		
+		String status = active ? "T" : "F";
 		
 		try {
-			var sql =   " update users     " +
-						" set status = ?   " +
-						" where email = ?  ";
+			var sql =   " update users    " +
+						" set ready   = ? " +
+						" where email = ? ";
 			var cn = DriverManager.getConnection(source);
 			var ps = cn.prepareStatement(sql);
 			ps.setString(1, status);
@@ -536,10 +553,10 @@ class Storage {
 	static String
 	getUserStatus(String signature) {
 		if (signature == null) return "unknown";
-
-		String status = "unknown";
+		String result = "busy";
+		
 		try {
-			String s =  " select status from users " +
+			String s =  " select ready from users " +
 						" where signature = ?      ";
 			
 			var cn = DriverManager.getConnection(source);
@@ -547,14 +564,16 @@ class Storage {
 			ps.setString(1, signature);
 			var rs = ps.executeQuery();
 			if (rs.next()) {
-				status = rs.getString("status");
+				String status = rs.getString("ready");
+				if ("T".equals(status)) result = "ready";
+				if ("F".equals(status)) result = "busy";
 			}
 			rs.close();
 			ps.close();
 			cn.close();
 		} catch (Exception e) { }
 	
-		return status;
+		return result;
 	}
 	
 	static boolean
@@ -592,7 +611,7 @@ class Storage {
 		
 		try {
 			var sql =   " update users          " +
-						" set status = 'banned' " +
+						" set active = 'F'      " +
 						" where identifier = ?  ";
 			var cn = DriverManager.getConnection(source);
 			var ps = cn.prepareStatement(sql);

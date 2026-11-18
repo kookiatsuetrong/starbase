@@ -22,8 +22,15 @@ create table users
 	signature     varchar(200) not null unique,
 	identifier    bigint       not null unique,
 	theme         varchar(200) not null default '#EE5577',
-	created       datetime     not null default (utc_timestamp())
+	created       datetime     not null default (utc_timestamp()),
+	
+	active        char not null default 'T',
+	ready         char not null default 'T'
 );
+
+-- active    'T' for typical, 'F' for banned
+-- calling   'T' for on calling (video call application)
+-- ready     'T' for ready to call, 'F' for busy
 
 -- users.status can be 'typical' or 'banned'
 -- 

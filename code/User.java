@@ -13,6 +13,7 @@ public class User {
 	long   identifier;
 	String theme;
 	String language;
+	boolean active;
 	
 	public long   getNumber()     { return number;     }
 	public String getEmail()      { return email;      }
@@ -23,6 +24,7 @@ public class User {
 	public long   getIdentifier() { return identifier; }
 	public String getTheme()      { return theme;      }
 	public String getLanguage()   { return language;   }
+	public boolean isActive()     { return active;     }
 	
 	boolean administrator;
 	boolean staff;

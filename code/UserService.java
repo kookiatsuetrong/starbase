@@ -157,7 +157,7 @@ class UserService {
 			Storage.insertPasswordTrial(email);
 			
 			int trial = Storage.getDailyPasswordTrial(email);
-			System.out.println("Daily password fails: " + trial);
+			System.out.println("Daily password trial fails: " + trial);
 			if (trial >= MAXIMUM_PASSWORD_TRIAL) {
 				return Tool.createError("account-has-been-suspended");
 			}
@@ -166,12 +166,12 @@ class UserService {
 		}
 		
 		// This user.status must be: 
-		//   'typical', 'busy', 'active', 'on-call', 'ready'
+		//   'typical'
 		
 		// This user.status must not be: 
-		//   'banned', 'removed', 'suspended'
+		//   'removed'
 		
-		if ("banned".equals(user.status) == true) {
+		if (user.active == false) {
 			return Tool.createError("invalid-user-status");
 		}
 		
@@ -812,17 +812,14 @@ class UserService {
 		if (user == null) return Tool.createError("invalid-user");
 		
 		String status = context.getParameter("status");
-		boolean valid = false;
+		boolean active = true;
 		
-		if ("typical".equals(status)) { valid = true; }
-		if ("calling".equals(status)) { valid = true; }
-		if ("busy"   .equals(status)) { valid = true; }
+		if ("ready".equals(status)) { active = true;  }
+		if ("busy" .equals(status)) { active = false; }
 
-		if (valid == true) {
-			boolean result = Storage.updateStatus(user, status);
-			if (result == true) {
-				return Tool.createSuccess("update-status-successfully");		
-			}
+		boolean result = Storage.updateStatus(user, active);
+		if (result == true) {
+			return Tool.createSuccess("update-status-successfully");
 		}
 		
 		return Tool.createError("unable-to-update-status");

@@ -47,8 +47,6 @@ class Email {
 		Storage.queueEmail(recipient, subject, text, html);
 	}
 	
-	
-	
 	static String
 	readEmail(String fileName, String extension, String language) {
 		String result = null;
@@ -90,11 +88,11 @@ class Email {
 		if (language == null) {
 			language = Translation.defaultLanguage;
 		}
-		String html = readEmail("email/activation-code", ".html", language);
 		String text = readEmail("email/activation-code", ".txt",  language);
+		String html = readEmail("email/activation-code", ".html", language);
 		
-		html = html.replaceAll("--ACTIVATION-CODE--", activationCode);
 		text = text.replaceAll("--ACTIVATION-CODE--", activationCode);
+		html = html.replaceAll("--ACTIVATION-CODE--", activationCode);
 		
 		var translate = Translation.getTranslation(language);
 		String subject = translate.get("activation-code");
@@ -102,8 +100,8 @@ class Email {
 		Email.sendEmail(
 				email,
 				subject,
-				html,
-				text);
+				text,
+				html);
 	}
 	
 	static void
@@ -111,11 +109,11 @@ class Email {
 		if (language == null) {
 			language = Translation.defaultLanguage;
 		}
-		String html = readEmail("email/reset-code", ".html", language);
 		String text = readEmail("email/reset-code", ".txt",  language);
+		String html = readEmail("email/reset-code", ".html", language);
 		
-		html = html.replaceAll("--RESET-CODE--", resetCode);
 		text = text.replaceAll("--RESET-CODE--", resetCode);
+		html = html.replaceAll("--RESET-CODE--", resetCode);
 		
 		var translate = Translation.getTranslation(language);
 		String subject = translate.get("reset-code");
@@ -123,8 +121,8 @@ class Email {
 		Email.sendEmail(
 				email,
 				subject,
-				html,
-				text);
+				text,
+				html);
 	}
 
 }
