@@ -1,0 +1,4 @@
+{
+	"connectionString": 
+		"jdbc:mysql://127.0.0.1/starbase?user=me&password=password"
+}

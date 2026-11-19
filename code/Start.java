@@ -15,16 +15,12 @@ import static web.framework.Rockstar.*;
 
 class Start {
 	
-	EmailThread emailThread = new EmailThread();
-	
 	void
 	main() {
 		
 		Settings.refresh();
 		WebService.refresh();
-		Translation.refresh();
-		
-		emailThread.start();
+		Translation.refresh();		
 		
 		/*
 		LocalDateTime t = LocalDateTime.now(ZoneOffset.UTC);
