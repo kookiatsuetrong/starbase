@@ -30,18 +30,13 @@ import java.util.HashMap;
 import java.util.Properties;
 import org.json.JSONObject;
 
-class EmailManager extends Thread {
+class EmailManager {
 	
 	public static void main(String[] data) {
 		readSettings();
 		
 		EmailManager m = new EmailManager();
-		m.start();
 		m.startServer();
-	}
-	
-	EmailManager() {
-		
 	}
 	
 	void startServer() {
@@ -51,59 +46,47 @@ class EmailManager extends Thread {
 				System.out.println("Socket Waiting ...");
 				Socket client = server.accept();
 				client.close();
-				synchronized(this) {
-					this.notify();
-				}
+				this.start();
 			}
 		} catch (Exception e) { }
 	}
 	
-	@Override
-	public void run() {
-		while (true) {
-			
-			System.out.println("Thread Waiting ...");
-			
-			try {
-				synchronized(this) {
-					this.wait();
-				}
-			} catch (Exception e) { }
-			
-			System.out.print("Checking Email ...");
-			
-			try {
-				String s =  " select * from emails     " +
-							" where status = 'created' ";
+	
+	void start() {
 
-				var cn = DriverManager.getConnection(source);
-				var ps = cn.prepareStatement(s);
-				var rs = ps.executeQuery();
-				if (rs.next()) {
-					long number    = rs.getLong("number");
-					String address = rs.getString("address");
-					String subject = rs.getString("subject");
-					String text    = rs.getString("text");
-					String html    = rs.getString("html");
-					
-					// TODO: Separate this line to the new thread
-					update(number, "preparing");
-					
-					System.out.println("Sending email to " + address + 
-										" " + text);
-					
-					EmailSender e = new EmailSender(address, 
-											subject, text, html);
-					e.start();
-					this. update(number, "sent");
-				}
-				rs.close();
-				ps.close();
-				cn.close();
-			} catch (Exception e) { }
-			
-			System.out.println(" finished");
-		}
+		System.out.print("Checking Email ...");
+
+		try {
+			String s =  " select * from emails     " +
+						" where status = 'created' ";
+
+			var cn = DriverManager.getConnection(source);
+			var ps = cn.prepareStatement(s);
+			var rs = ps.executeQuery();
+			if (rs.next()) {
+				long number    = rs.getLong("number");
+				String address = rs.getString("address");
+				String subject = rs.getString("subject");
+				String text    = rs.getString("text");
+				String html    = rs.getString("html");
+
+				System.out.println("Sending email to " + address + 
+									" " + text);
+
+				this.update(number, "preparing");
+
+				EmailSender e = new EmailSender(address, 
+										subject, text, html);
+				e.start();
+				
+				this. update(number, "sent");
+			}
+			rs.close();
+			ps.close();
+			cn.close();
+		} catch (Exception e) { }
+
+		System.out.println(" finished");
 	}
 	
 	void update(long number, String status) {
@@ -195,7 +178,6 @@ class Email {
 	static String tls        = "true";
 	
 }
-
 
 class EmailSender extends Thread {
 	
