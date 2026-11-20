@@ -4,6 +4,7 @@
  */
 
 import java.io.File;
+import java.net.Socket;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -640,9 +641,9 @@ class Storage {
 		if (html    == null) html = text;
 		
 		try {
-			String s =  " insert into emails(           " +
-						" address, subject, text, html) " +
-						" values(?, ?, ?, ?)            ";
+			String s =  " insert into emails(             " +
+						"   address, subject, text, html) " +
+						" values(?, ?, ?, ?)              ";
 			
 			var cn = DriverManager.getConnection(source);
 			var ps = cn.prepareStatement(s);
@@ -653,9 +654,13 @@ class Storage {
 			ps.execute();
 			ps.close();
 			cn.close();
+			
+			System.out.println("Activating Email");
+			Socket socket = new Socket("127.0.0.1", 9315);
+			
 			return true;
 		} catch (Exception e) { }
-		
+				
 		return false;
 	}
 	

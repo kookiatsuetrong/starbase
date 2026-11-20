@@ -26,7 +26,7 @@
 		
 	</build>
 	<properties>
-		<maven.compiler.release>25</maven.compiler.release>
+		<maven.compiler.release>27</maven.compiler.release>
 	</properties>
 	<dependencies>
 		<dependency>

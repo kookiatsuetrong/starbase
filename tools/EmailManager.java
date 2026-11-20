@@ -23,16 +23,103 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import java.io.FileReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Properties;
 import org.json.JSONObject;
 
-class EmailManager {
+class EmailManager extends Thread {
 	
 	public static void main(String[] data) {
 		readSettings();
-		run();
+		
+		EmailManager m = new EmailManager();
+		m.start();
+		m.startServer();
+	}
+	
+	EmailManager() {
+		
+	}
+	
+	void startServer() {
+		try {
+			ServerSocket server = new ServerSocket(9315);
+			while (true) {
+				System.out.println("Socket Waiting ...");
+				Socket client = server.accept();
+				client.close();
+				synchronized(this) {
+					this.notify();
+				}
+			}
+		} catch (Exception e) { }
+	}
+	
+	@Override
+	public void run() {
+		while (true) {
+			
+			System.out.println("Thread Waiting ...");
+			
+			try {
+				synchronized(this) {
+					this.wait();
+				}
+			} catch (Exception e) { }
+			
+			System.out.print("Checking Email ...");
+			
+			try {
+				String s =  " select * from emails     " +
+							" where status = 'created' ";
+
+				var cn = DriverManager.getConnection(source);
+				var ps = cn.prepareStatement(s);
+				var rs = ps.executeQuery();
+				if (rs.next()) {
+					long number    = rs.getLong("number");
+					String address = rs.getString("address");
+					String subject = rs.getString("subject");
+					String text    = rs.getString("text");
+					String html    = rs.getString("html");
+					
+					// TODO: Separate this line to the new thread
+					update(number, "preparing");
+					
+					System.out.println("Sending email to " + address + 
+										" " + text);
+					
+					EmailSender e = new EmailSender(address, 
+											subject, text, html);
+					e.start();
+					this. update(number, "sent");
+				}
+				rs.close();
+				ps.close();
+				cn.close();
+			} catch (Exception e) { }
+			
+			System.out.println(" finished");
+		}
+	}
+	
+	void update(long number, String status) {
+		try {
+			String s =  " update emails set status = ? " +
+						" where number = ?             ";
+
+			var cn = DriverManager.getConnection(source);
+			var ps = cn.prepareStatement(s);
+			ps.setString(1, status);
+			ps.setLong  (2, number);
+			ps.execute();
+			ps.close();
+			cn.close();
+		} catch (Exception e) { }
+
 	}
 	
 	static String source;
@@ -94,66 +181,7 @@ class EmailManager {
 		
 	}
 	
-	
-	static void run() {
-		while (true) {
-			try {
-				Thread.sleep(5000);
-			} catch (Exception e) { }
-			
-			System.out.println("Checking Email");
-			
-			try {
-				String s =  " select * from emails     " +
-							" where status = 'created' ";
-
-				var cn = DriverManager.getConnection(source);
-				var ps = cn.prepareStatement(s);
-				var rs = ps.executeQuery();
-				if (rs.next()) {
-					long number    = rs.getLong("number");
-					String address = rs.getString("address");
-					String subject = rs.getString("subject");
-					String text    = rs.getString("text");
-					String html    = rs.getString("html");
-					
-					// TODO: Separate this line to work faster
-					update(number, "preparing");
-					
-					System.out.println("Sending email to " + address + 
-										" " + text);
-					
-					EmailSender e = new EmailSender(address, 
-											subject, text, html);
-					e.start();
-					update(number, "sent");
-				}
-				rs.close();
-				ps.close();
-				cn.close();
-			} catch (Exception e) { }
-			
-		}
-	}
-	
-	static void update(long number, String status) {
-		try {
-			String s =  " update emails set status = ? " +
-						" where number = ?             ";
-
-			var cn = DriverManager.getConnection(source);
-			var ps = cn.prepareStatement(s);
-			ps.setString(1, status);
-			ps.setLong  (2, number);
-			ps.execute();
-			ps.close();
-			cn.close();
-		} catch (Exception e) { }
-
-	}
-	
 }
-
 
 class Email {
 	
