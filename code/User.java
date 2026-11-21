@@ -1,5 +1,5 @@
 /**
- * User detail
+ * User entity
  * 
  */
 public class User {

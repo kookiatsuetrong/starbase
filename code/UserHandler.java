@@ -1,3 +1,8 @@
+/**
+ * Web Handler for User Management
+ * 
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import web.framework.Context;

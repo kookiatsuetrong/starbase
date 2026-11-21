@@ -1,3 +1,8 @@
+/**
+ * Language entity
+ * 
+ */
+
 public class Language {
 	long number;
 	String name;

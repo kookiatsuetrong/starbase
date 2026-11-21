@@ -1,5 +1,5 @@
 /**
- * Settings.java
+ * System configuration
  * 
  */
 

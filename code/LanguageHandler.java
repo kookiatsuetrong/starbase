@@ -1,3 +1,7 @@
+/**
+ * Language Handler
+ * 
+ */
 import java.util.ArrayList;
 import java.util.HashMap;
 import web.framework.Context;
