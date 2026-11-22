@@ -32,11 +32,13 @@ import org.json.JSONObject;
 
 class EmailManager {
 	
+	String source;
+	String defaultLanguage;
+	
 	public static void main(String[] data) {
-		readSettings();
-		
-		EmailManager m = new EmailManager();
-		m.startServer();
+		EmailManager manager = new EmailManager();
+		manager.readSettings();
+		manager.startServer();
 	}
 	
 	void startServer() {
@@ -46,13 +48,12 @@ class EmailManager {
 				System.out.println("Socket Waiting ...");
 				Socket client = server.accept();
 				client.close();
-				this.start();
+				this.checkEmail();
 			}
 		} catch (Exception e) { }
 	}
 	
-	
-	void start() {
+	void checkEmail() {
 
 		System.out.print("Checking Email ...");
 
@@ -70,16 +71,16 @@ class EmailManager {
 				String text    = rs.getString("text");
 				String html    = rs.getString("html");
 
-				System.out.println("Sending email to " + address + 
-									" " + text);
+				System.out.println("Sending email to " + 
+									address + " " + text);
 
 				this.update(number, "preparing");
 
 				EmailSender e = new EmailSender(address, 
 										subject, text, html);
-				e.start();
+				e.send();
 				
-				this. update(number, "sent");
+				this.update(number, "sent");
 			}
 			rs.close();
 			ps.close();
@@ -105,13 +106,8 @@ class EmailManager {
 
 	}
 	
-	static String source;
-	static String fullWebSite;
-	static String supportEmail;
-	static String defaultLanguage;
-	static HashMap<String, String> map = new HashMap<>();
-	
-	static void readSettings() {
+	void readSettings() {
+		HashMap<String, String> map = new HashMap<>();
 		try {
 			FileReader reader = new FileReader("settings.json");
 			String buffer = reader.readAllAsString();
@@ -143,30 +139,30 @@ class EmailManager {
 			System.out.println(e);
 		}
 		
-		fullWebSite  = map.get("full-web-site");
-		supportEmail = map.get("support-email");
+		this.defaultLanguage = map.get("default-language");
 		
-		defaultLanguage = map.get("default-language");
+		EmailSettings.fullWebSite  = map.get("full-web-site");
+		EmailSettings.supportEmail = map.get("support-email");
 		
-		Email.server     = map.get("email-server");
-		Email.port       = map.get("email-port");
-		Email.senderName = map.get("email-sender-name");
-		Email.sender     = map.get("email-sender");
-		Email.password   = map.get("email-password");
-		Email.protocol   = map.get("email-protocol");
-		Email.auth       = map.get("email-auth");
-		Email.tls        = map.get("email-tls");
+		EmailSettings.server     = map.get("email-server");
+		EmailSettings.port       = map.get("email-port");
+		EmailSettings.senderName = map.get("email-sender-name");
+		EmailSettings.sender     = map.get("email-sender");
+		EmailSettings.password   = map.get("email-password");
+		EmailSettings.protocol   = map.get("email-protocol");
+		EmailSettings.auth       = map.get("email-auth");
+		EmailSettings.tls        = map.get("email-tls");
 
 		System.out.println("Update Settings");
-		System.out.println("Storage.source  " + source);
-		System.out.println("Email.sender    " + Email.sender);
-		System.out.println("defaultLanguage " + defaultLanguage);
+		System.out.println("Storage.source       " + this.source);
+		System.out.println("EmailSettings.sender " + EmailSettings.sender);
+		System.out.println("defaultLanguage      " + defaultLanguage);
 		
 	}
 	
 }
 
-class Email {
+class EmailSettings {
 	
 	static String server     = "";
 	static String port       = "587";
@@ -176,6 +172,9 @@ class Email {
 	static String protocol   = "TLSv1.2";
 	static String auth       = "true";
 	static String tls        = "true";
+	
+	static String fullWebSite  = "";
+	static String supportEmail = "";
 	
 }
 
@@ -194,22 +193,22 @@ class EmailSender extends Thread {
 	String text;
 	String html;
 	
-	@Override public void 
-	run() {
+	void send() {
 		try {
 			Properties detail = new Properties();
-			detail.put("mail.smtp.host",            Email.server);
-			detail.put("mail.smtp.port",            Email.port);
-			detail.put("mail.smtp.ssl.protocols",   Email.protocol);
-			detail.put("mail.smtp.auth",            Email.auth);
-			detail.put("mail.smtp.starttls.enable", Email.tls);
+			detail.put("mail.smtp.host",            EmailSettings.server);
+			detail.put("mail.smtp.port",            EmailSettings.port);
+			detail.put("mail.smtp.ssl.protocols",   EmailSettings.protocol);
+			detail.put("mail.smtp.auth",            EmailSettings.auth);
+			detail.put("mail.smtp.starttls.enable", EmailSettings.tls);
 			var credential = new EmailCredential(
-										Email.sender, 
-										Email.password);
+										EmailSettings.sender, 
+										EmailSettings.password);
 			Session session = Session.getInstance(detail, credential);
 
 			Message message = new MimeMessage(session);
-			String sender = Email.senderName + "<" + Email.sender + ">";
+			String sender = EmailSettings.senderName + "<" + 
+							EmailSettings.sender + ">";
 			
 			message.setFrom(new InternetAddress(sender));
 			message.setRecipients(
@@ -231,7 +230,7 @@ class EmailSender extends Thread {
 		}
 	}
 }
-		
+
 class EmailCredential extends Authenticator {
 	EmailCredential(String address, String password) {
 		this.address = address;
