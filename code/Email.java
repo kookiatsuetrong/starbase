@@ -81,7 +81,6 @@ class Email {
 	// TODO: Add sendWelcomeMessage()
 	// TODO: Add sendDeactivateConfirm()
 	// TODO: Add sendChangePasswordConfirm()
-	// TODO: Add sendResetPasswordConfirm()
 	
 	static void 
 	sendActivationCode(String email, String activationCode, String language) {
@@ -117,6 +116,24 @@ class Email {
 		
 		var translate = Translation.getTranslation(language);
 		String subject = translate.get("reset-code");
+		
+		Email.sendEmail(
+				email,
+				subject,
+				text,
+				html);
+	}
+	
+	static void
+	sendResetSuccess(String email, String language) {
+		if (language == null) {
+			language = Translation.defaultLanguage;
+		}
+		String text = readEmail("email/reset-success", ".txt",  language);
+		String html = readEmail("email/reset-success", ".html", language);
+		
+		var translate = Translation.getTranslation(language);
+		String subject = translate.get("reset-success");
 		
 		Email.sendEmail(
 				email,

@@ -494,6 +494,9 @@ class UserService {
 		User newly = Storage.getUserByEmail(email);
 		context.setSession("user", newly);
 		
+		String language = (String)context.request.getAttribute("language");
+		Email.sendResetSuccess(email, language);
+		
 		return Tool.createSuccess("new-password-created");
 	}
 	
