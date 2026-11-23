@@ -78,8 +78,6 @@ class Email {
 		return result;
 	}
 	
-	// TODO: Add sendWelcomeMessage()
-	// TODO: Add sendDeactivateConfirm()
 	// TODO: Add sendChangePasswordConfirm()
 	
 	static void 
@@ -134,6 +132,42 @@ class Email {
 		
 		var translate = Translation.getTranslation(language);
 		String subject = translate.get("reset-success");
+		
+		Email.sendEmail(
+				email,
+				subject,
+				text,
+				html);
+	}
+	
+	static void
+	sendRemoveAccount(String email, String language) {
+		if (language == null) {
+			language = Translation.defaultLanguage;
+		}
+		String text = readEmail("email/remove-account", ".txt",  language);
+		String html = readEmail("email/remove-account", ".html", language);
+		
+		var translate = Translation.getTranslation(language);
+		String subject = translate.get("remove-account");
+		
+		Email.sendEmail(
+				email,
+				subject,
+				text,
+				html);
+	}
+	
+	static void
+	sendWelcome(String email, String language) {
+		if (language == null) {
+			language = Translation.defaultLanguage;
+		}
+		String text = readEmail("email/welcome", ".txt",  language);
+		String html = readEmail("email/welcome", ".html", language);
+		
+		var translate = Translation.getTranslation(language);
+		String subject = translate.get("account-created");
 		
 		Email.sendEmail(
 				email,

@@ -390,5 +390,7 @@ insert into translations(language,code,text) value('en-us', 'status', 'Status');
 insert into translations(language,code,text) value('th-th', 'status', 'สถานะ');
 insert into translations(language,code,text) value('en-us', 'reset-success', 'Reset password successfully');
 insert into translations(language,code,text) value('th-th', 'reset-success', 'เปลี่ยนรหัสผ่านเรียบร้อย');
+insert into translations(language,code,text) value('en-us', 'account-created', 'Welcome');
+insert into translations(language,code,text) value('th-th', 'account-created', 'ยินดีต้อนรับ');
 
 

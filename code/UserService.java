@@ -291,6 +291,8 @@ class UserService {
 		result.put("result", "OK");
 		result.put("language", user.language);
 		
+		Email.sendWelcome(user.email, user.language);
+		
 		return result;
 	}
 	
@@ -555,6 +557,7 @@ class UserService {
 	removeAccount(Context context) {
 		User user = (User)context.getSession("user");
 		if (user == null) return Tool.createError("invalid-user");
+		String language = (String)context.request.getAttribute("language");
 		
 		TreeMap<String,Object> input = (TreeMap<String,Object>)context.read();
 		
@@ -567,6 +570,8 @@ class UserService {
 		
 		context.removeSession("user");
 		context.removeSession("shop");
+		
+		Email.sendRemoveAccount(user.email, language);
 		
 		return Tool.createSuccess("account-has-been-removed");
 	}
