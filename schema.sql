@@ -28,9 +28,20 @@ create table users
 	ready         char not null default 'T'
 );
 
--- active    'T' for typical, 'F' for banned
--- calling   'T' for on calling (video call application)
--- ready     'T' for ready to call, 'F' for busy
+-- active      'T' = typical, 'F' = banned
+-- ready       'T' = ready to call, 'F' = busy (Set manually by user)
+
+-- choose one field from the following alternatives:
+-- calling     'T' = on calling (video call application), 'F' = not in a call
+-- on_call     'T' = on calling (video call), 'F' = not in a call
+-- call_ready  'T' = ready for call, 'F' in a call
+
+
+-- banned      'F' or 'T'
+-- calling     'F' or 'T'   (Video Call)
+-- status      Manually set by user
+
+
 
 -- users.status can be 'typical' or 'banned'
 -- 
