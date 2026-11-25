@@ -16,15 +16,15 @@ public class User {
 	boolean active;
 	boolean ready;
 	
-	public long   getNumber()     { return number;     }
-	public String getEmail()      { return email;      }
-	public String getFirstName()  { return firstName;  }
-	public String getLastName()   { return lastName;   }
-	public String getStatus()     { return status;     }
-	public String getSignature()  { return signature;  }
-	public long   getIdentifier() { return identifier; }
-	public String getTheme()      { return theme;      }
-	public String getLanguage()   { return language;   }
+	public long    getNumber()     { return number;     }
+	public String  getEmail()      { return email;      }
+	public String  getFirstName()  { return firstName;  }
+	public String  getLastName()   { return lastName;   }
+	public String  getStatus()     { return status;     }
+	public String  getSignature()  { return signature;  }
+	public long    getIdentifier() { return identifier; }
+	public String  getTheme()      { return theme;      }
+	public String  getLanguage()   { return language;   }
 	public boolean isActive()     { return active;     }
 	public boolean isReady()      { return ready;      }
 	
