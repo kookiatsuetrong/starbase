@@ -17,35 +17,23 @@ create table users
 	administrator char         not null default 'F',
 	staff         char         not null default 'F',
 
-	status        varchar(200) not null default 'typical',
-	language      varchar(200) not null default 'en-us',
-	signature     varchar(200) not null unique,
-	identifier    bigint       not null unique,
+	status        varchar(200) not null default 'ready',   -- set by user
+	language      varchar(200) not null default 'en-us',   -- set by user
+	signature     varchar(200) not null unique,            -- assigned by user
+	identifier    bigint       not null unique,            -- avoid number
 	theme         varchar(200) not null default '#EE5577',
-	created       datetime     not null default (utc_timestamp()),
-	
-	active        char not null default 'T',
-	ready         char not null default 'T'
+
+	calling       char not null default 'F', -- for video call
+	banned        char not null default 'F',
+
+	created       datetime not null default (utc_timestamp())
 );
 
--- active      'T' = typical, 'F' = banned
--- ready       'T' = ready to call, 'F' = busy (Set manually by user)
-
--- choose one field from the following alternatives:
--- calling     'T' = on calling (video call application), 'F' = not in a call
--- on_call     'T' = on calling (video call), 'F' = not in a call
--- call_ready  'T' = ready for call, 'F' in a call
-
-
 -- banned      'F' or 'T'
--- calling     'F' or 'T'   (Video Call)
+-- calling     'F' or 'T'  (Video Call)
 -- status      Manually set by user
 
-
-
--- users.status can be 'typical' or 'banned'
--- 
--- or create a new table, e.g. realtime_statuses
+-- or create a new column, e.g. realtime_status
 -- 'typical'
 -- 'busy'
 -- 'calling'
@@ -64,9 +52,9 @@ where email='user@email.com';
 create table languages
 (
 	number        bigint unique not null auto_increment,
-	alias         varchar( 200) unique not null,
-	name          varchar( 200) not null,
-	icon          varchar( 200)
+	alias         varchar(200) unique not null,
+	name          varchar(200) not null,
+	icon          varchar(200)
 );
 
 insert into languages(alias, name) values('en-us', 'English (United State)');
@@ -88,10 +76,10 @@ insert into languages(alias, name) values('th-th', 'Thai (Thailand)');
 create table currencies
 (
 	number        bigint unique not null auto_increment,
-	alias         varchar( 200) unique not null,          -- USD, AUD, THB
-	name          varchar( 200) not null,
-	symbol        varchar( 200) not null default '$',
-	icon          varchar( 200)
+	alias         varchar(200) unique not null,          -- USD, AUD, THB
+	name          varchar(200) not null,
+	symbol        varchar(200) not null default '$',
+	icon          varchar(200)
 );
 
 insert into currencies(alias, name, symbol) values('USD', 'US Dollar', '$');
@@ -140,8 +128,7 @@ create table translations
 -- insert into translations(language,code,text) value('en-us', 'home', 'Home');
 -- insert into translations(language,code,text) value('th-th', 'home', 'หน้าแรก');
 
--- recipient, subject, text, html
-
+-- the queue of email for sending out: recipient, subject, text, html
 create table emails
 (
 	number        bigint unique not null auto_increment,

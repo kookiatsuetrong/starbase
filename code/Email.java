@@ -79,6 +79,7 @@ class Email {
 	}
 	
 	// TODO: Add sendChangePasswordConfirm()
+	// TODO: Add bannedConfirm()
 	
 	static void 
 	sendActivationCode(String email, String activationCode, String language) {

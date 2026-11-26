@@ -72,7 +72,6 @@ class Storage {
 		return map;
 	}
 	
-	
 	static ArrayList<User>
 	getUsers() {
 		ArrayList<User> result = new ArrayList<>();
@@ -98,13 +97,13 @@ class Storage {
 				
 				String buffer;
 				
-				buffer             = rs.getString("active");
+				buffer             = rs.getString("banned");
 				buffer             = buffer == null ? "F" : buffer;
-				user.active        = buffer.charAt(0) == 'T';
+				user.banned        = buffer.charAt(0) == 'T';
 				
-				buffer             = rs.getString("ready");
+				buffer             = rs.getString("calling");
 				buffer             = buffer == null ? "F" : buffer;
-				user.ready         = buffer.charAt(0) == 'T';
+				user.calling       = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
@@ -145,14 +144,14 @@ class Storage {
 				user.identifier = rs.getLong  ("identifier");
 				
 				String buffer;
-				
-				buffer             = rs.getString("active");
+								
+				buffer             = rs.getString("banned");
 				buffer             = buffer == null ? "F" : buffer;
-				user.active        = buffer.charAt(0) == 'T';
+				user.banned        = buffer.charAt(0) == 'T';
 				
-				buffer             = rs.getString("ready");
+				buffer             = rs.getString("calling");
 				buffer             = buffer == null ? "F" : buffer;
-				user.ready         = buffer.charAt(0) == 'T';
+				user.calling       = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
@@ -192,14 +191,14 @@ class Storage {
 				user.identifier = rs.getLong  ("identifier");
 				
 				String buffer;
-				
-				buffer             = rs.getString("active");
+
+				buffer             = rs.getString("banned");
 				buffer             = buffer == null ? "F" : buffer;
-				user.active        = buffer.charAt(0) == 'T';
+				user.banned        = buffer.charAt(0) == 'T';
 				
-				buffer             = rs.getString("ready");
+				buffer             = rs.getString("calling");
 				buffer             = buffer == null ? "F" : buffer;
-				user.ready         = buffer.charAt(0) == 'T';
+				user.calling       = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
@@ -260,13 +259,13 @@ class Storage {
 				
 				String buffer;
 				
-				buffer             = rs.getString("active");
+				buffer             = rs.getString("banned");
 				buffer             = buffer == null ? "F" : buffer;
-				user.active        = buffer.charAt(0) == 'T';
+				user.banned        = buffer.charAt(0) == 'T';
 				
-				buffer             = rs.getString("ready");
+				buffer             = rs.getString("calling");
 				buffer             = buffer == null ? "F" : buffer;
-				user.ready         = buffer.charAt(0) == 'T';
+				user.calling       = buffer.charAt(0) == 'T';
 				
 				buffer             = rs.getString("administrator");
 				buffer             = buffer == null ? "F" : buffer;
@@ -389,8 +388,8 @@ class Storage {
 		if (user == null) return false;
 		if (password == null) return false;
 		
-		// TODO: Remove all addresses of this user
-		// TODO: Remove all manages of this user
+		// TODO: Remove all addresses of this user (Shop Module)
+		// TODO: Remove all manages of this user   (Shop Module)
 		
 		// remove profile photo
 		String[] files = {
@@ -428,6 +427,7 @@ class Storage {
 						"   first_name = 'removed',    " +
 						"   last_name  = 'removed',    " +
 						"   status     = 'removed',    " +
+						"   banned     = 'T',          " +
 						"   signature  = identifier    " +
 						" where email  = ? and         " +
 						"     password = sha2(?, 512)  ";
@@ -545,16 +545,19 @@ class Storage {
 	where happened >= utc_timestamp() - interval 60 minute;
 	*/
 	
+	// this subprogram has been set from user directly
 	static boolean
 	updateStatus(User user, boolean active) {
 		if (user == null) return false;
 		
-		String status = active ? "T" : "F";
+		String status = "unknown";
+		if (active == true) status = "ready";
+		if (active == false) status = "busy";
 		
 		try {
-			var sql =   " update users    " +
-						" set ready   = ? " +
-						" where email = ? ";
+			var sql =   " update users     " +
+						" set status   = ? " +
+						" where email  = ? ";
 			var cn = DriverManager.getConnection(source);
 			var ps = cn.prepareStatement(sql);
 			ps.setString(1, status);
@@ -570,10 +573,10 @@ class Storage {
 	static String
 	getUserStatus(String signature) {
 		if (signature == null) return "unknown";
-		String result = "busy";
+		String result = "unknown";
 		
 		try {
-			String s =  " select ready from users " +
+			String s =  " select status from users " +
 						" where signature = ?      ";
 			
 			var cn = DriverManager.getConnection(source);
@@ -581,9 +584,7 @@ class Storage {
 			ps.setString(1, signature);
 			var rs = ps.executeQuery();
 			if (rs.next()) {
-				String status = rs.getString("ready");
-				if ("T".equals(status)) result = "ready";
-				if ("F".equals(status)) result = "busy";
+				result = rs.getString("status");
 			}
 			rs.close();
 			ps.close();
@@ -599,7 +600,7 @@ class Storage {
 		
 		try {
 			var sql =   " update users          " +
-						" set active = 'F'      " +
+						" set banned = 'T'      " +
 						" where identifier = ?  ";
 			var cn = DriverManager.getConnection(source);
 			var ps = cn.prepareStatement(sql);
@@ -619,7 +620,7 @@ class Storage {
 		
 		try {
 			var sql =   " update users          " +
-						" set active = 'T'      " +
+						" set banned = 'T'      " +
 						" where identifier = ?  ";
 			var cn = DriverManager.getConnection(source);
 			var ps = cn.prepareStatement(sql);
@@ -632,6 +633,7 @@ class Storage {
 		return false;
 	}
 	
+	// add a new email detail to the email queue
 	static boolean
 	queueEmail(String address, String subject, String text, String html) {
 		

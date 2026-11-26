@@ -48,6 +48,9 @@ Log In
 5. Log In with very long password
    -- process as usual password
 
+6. Log In with banned account.
+   -- show error
+
 
 Log Out
 1. Log Out

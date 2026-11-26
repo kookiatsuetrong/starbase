@@ -52,7 +52,6 @@ class WebService {
 		return result;
 	}
 	
-	
 	static Object
 	translate(Context context) {
 		String code = context.getParameter("code");

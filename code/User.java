@@ -13,8 +13,8 @@ public class User {
 	long   identifier;
 	String theme;
 	String language;
-	boolean active;
-	boolean ready;
+	boolean banned;
+	boolean calling;
 	
 	public long    getNumber()     { return number;     }
 	public String  getEmail()      { return email;      }
@@ -25,8 +25,8 @@ public class User {
 	public long    getIdentifier() { return identifier; }
 	public String  getTheme()      { return theme;      }
 	public String  getLanguage()   { return language;   }
-	public boolean isActive()     { return active;     }
-	public boolean isReady()      { return ready;      }
+	public boolean isBanned()      { return banned;     }
+	public boolean isCalling()     { return calling;    }
 	
 	boolean administrator;
 	boolean staff;

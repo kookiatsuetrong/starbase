@@ -168,18 +168,8 @@ class UserService {
 
 			return Tool.createError("incorrect-password");
 		}
-		
-		// This user.status must be: 
-		//   'typical'
-		
-		// This user.status must not be: 
-		//   'removed'
-		
-		if (user.active == false) {
-			return Tool.createError("invalid-user-status");
-		}
-		
-		if ("removed".equals(user.status) == true) {
+	
+		if (user.banned == true) {
 			return Tool.createError("invalid-user-status");
 		}
 		
@@ -713,7 +703,6 @@ class UserService {
 			}
 		}
 		
-		
 		return Tool.createSuccess("upload-photo-successfully");
 	}
 
@@ -862,7 +851,6 @@ class UserService {
 		
 		return Tool.createError("unable-to-update-status");
 	}
-	
 	
 	/**
 	 * Unbans the given user

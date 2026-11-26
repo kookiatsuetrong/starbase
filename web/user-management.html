@@ -39,24 +39,17 @@ Engine:     FreeMarker
 				<section class="item">
 					${u.email}
 					
-					<#assign readiness = "Busy">
-					<#if u.ready == true>
-					<#assign readiness = "Ready">
-					</#if>
-					(${readiness})
-					
 					<#assign userType = "User">
 					<#if u.administrator == true>
 					<#assign userType = "Administrator">
 					</#if>
 					
-					
-					<#if u.active>
+					<#if u.banned == false>
 						<a href="javascript:banUser('${u.identifier}')"
 							>Ban User</a>
 					</#if>
 					
-					<#if u.active == false>
+					<#if u.banned == true>
 						<a href="javascript:activateUser('${u.identifier}')"
 							>Activate User</a>
 					</#if>
